@@ -12,10 +12,11 @@
     <description>java class utilities for fixed format file I/O</description>
     <url>https://github.com/epi155/recfm-maven-plugin</url>
 
+    <!-- mvn versions:display-dependency-updates ! check for new version -->
+    <!-- mvn release:clean ! clean release file -->
+    <!-- mvn release:prepare ! creare RELEASE and next SNAPSHOT -->
+    <!-- mvn versions:set -DnewVersion=x.y.z -->
     <!-- mvn release:update-versions -->
-    <!-- mvn release:clean -->
-    <!-- mvn release:prepare -->
-    <!-- mvn versions:display-dependency-updates -->
     <!-- mvn dependency:tree -->
 
     <properties>
@@ -75,7 +76,7 @@
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-plugin-api</artifactId>
-            <version>3.9.1</version>
+            <version>3.9.2</version>
             <scope>provided</scope>
         </dependency>
         <!-- https://mvnrepository.com/artifact/org.apache.maven.plugin-tools/maven-plugin-annotations -->
@@ -89,7 +90,7 @@
         <dependency>
             <groupId>org.apache.maven</groupId>
             <artifactId>maven-core</artifactId>
-            <version>3.9.1</version>
+            <version>3.9.2</version>
             <scope>provided</scope>
         </dependency>
 
