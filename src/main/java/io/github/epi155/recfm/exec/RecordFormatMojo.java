@@ -111,6 +111,8 @@ public class RecordFormatMojo extends AbstractMojo {
         tuningField(constructor, representer, "!Val", FieldConstant.class);
         tuningField(constructor, representer, "!Grp", FieldGroup.class);
         tuningField(constructor, representer, "!Occ", FieldOccurs.class);
+        tuningField(constructor, representer, "!GRP", FieldGroupProxy.class);
+        tuningField(constructor, representer, "!OCC", FieldOccursProxy.class);
 
         return new Yaml(constructor, representer);
     }
@@ -178,8 +180,10 @@ public class RecordFormatMojo extends AbstractMojo {
                 ClassesDefine structs = yaml.load(inputStream);
 
                 String cwd = Tools.makeDirectory(args.sourceDirectory, structs.getPackageName());
+                structs.getProxies()
+                        .forEach(it -> generateProxy(it, driver, structs, args));
                 structs.getClasses().
-                    forEach(it -> generateClass(it, driver, cwd, structs, args));
+                    forEach(it -> generateClass(it, driver, structs, args));
             } catch (FileNotFoundException e) {
                 getLog().warn("Setting " + setting + " does not exist, ignored.");
             } catch (Exception e) {
@@ -192,29 +196,45 @@ public class RecordFormatMojo extends AbstractMojo {
         getLog().info("Done.");
     }
 
-    private void generateClass(ClassDefine struct, CodeProvider driver, String cwd, ClassesDefine structs, GenerateArgs ga) {
+    private void generateProxy(ClassDefine proxy, CodeProvider driver, ClassesDefine structs, GenerateArgs ga) {
+        if (proxy.getFields().isEmpty()) return;
+        val base = proxy.getFields().get(0).getOffset();
+
+        val wrtPackage = structs.getPackageName();
+        getLog().info("- Prepare interface "+proxy.getName()+" ...");
+
+        proxy.checkForVoid();
+        boolean checkSuccesful = proxy.noBadName();
+        checkSuccesful &= proxy.noDuplicateName(Tools::testCollision);
+        checkSuccesful &= proxy.noHole(base);
+        checkSuccesful &= proxy.noOverlap(base);
+        if (checkSuccesful) {
+            getLog().info("  [####o] Creating ...");
+            driver.createInterface(generateDirectory, wrtPackage, proxy, ga);
+            getLog().info("  [#####] Created.");
+        } else {
+            throw new ClassDefineException("Class <" + proxy.getName() + "> bad defined");
+        }
+    }
+
+    private void generateClass(ClassDefine clazz, CodeProvider driver, ClassesDefine structs, GenerateArgs ga) {
         val wrtPackage = structs.getPackageName();
         val defaults = structs.getDefaults();
 
-        getLog().info("- Prepare class "+struct.getName()+" ...");
-        val classFile = driver.fileOf(cwd, struct.getName());
+        getLog().info("- Prepare class "+clazz.getName()+" ...");
 
-        struct.checkForVoid();
+        clazz.checkForVoid();
 
-        boolean checkSuccesful = struct.noBadName();
-        checkSuccesful &= struct.noDuplicateName(Tools::testCollision);
-        checkSuccesful &= struct.noHole();
-        checkSuccesful &= struct.noOverlap();
+        boolean checkSuccesful = clazz.noBadName();
+        checkSuccesful &= clazz.noDuplicateName(Tools::testCollision);
+        checkSuccesful &= clazz.noHole();
+        checkSuccesful &= clazz.noOverlap();
         if (checkSuccesful) {
-            try (PrintWriter pw = new PrintWriter(classFile)) {
-                getLog().info("  [####o] Creating ...");
-                driver.createClass(pw, wrtPackage, struct, ga, defaults);
-                getLog().info("  [#####] Created.");
-            } catch (IOException e) {
-                throw new ClassDefineException(e);
-            }
+            getLog().info("  [####o] Creating ...");
+            driver.createClass(generateDirectory, wrtPackage, clazz, ga, defaults);
+            getLog().info("  [#####] Created.");
         } else {
-            throw new ClassDefineException("Class <" + struct.getName() + "> bad defined");
+            throw new ClassDefineException("Class <" + clazz.getName() + "> bad defined");
         }
     }
 
