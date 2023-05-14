@@ -144,6 +144,11 @@ public class RecordFormatMojo extends AbstractMojo {
             td.substituteProperty("ini", Character.class, "getInitChar", "setInitChar");
             td.substituteProperty("pad", Character.class, "getPadChar", "setPadChar");
             td.substituteProperty("chk", CheckUser.class, GET_CHECK, SET_CHECK);
+        } else if (f == FieldGroupProxy.class) {
+            td.substituteProperty("as", ClassDefine.class, "getTypeDef", "setTypeDef");
+        } else if (f == FieldOccursProxy.class) {
+            td.substituteProperty("as", ClassDefine.class, "getTypeDef", "setTypeDef");
+            td.substituteProperty("x", int.class, "getTimes", "setTimes");
         }
         c.addTypeDescription(td);
         r.addTypeDescription(td);
@@ -180,7 +185,7 @@ public class RecordFormatMojo extends AbstractMojo {
                 ClassesDefine structs = yaml.load(inputStream);
 
                 String cwd = Tools.makeDirectory(args.sourceDirectory, structs.getPackageName());
-                structs.getProxies()
+                structs.getInterfaces()
                         .forEach(it -> generateProxy(it, driver, structs, args));
                 structs.getClasses().
                     forEach(it -> generateClass(it, driver, structs, args));
