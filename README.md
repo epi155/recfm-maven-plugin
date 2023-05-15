@@ -7,6 +7,10 @@
 [3) Plugin parameters details](#3)<br/>
 [4) Configuration YAML details](#4)<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;[4.1) Package level](#41)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[4.1.1) Package default for alphanumeric](#411)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[4.1.2) Package default for numeric](#412)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[4.1.3) Package default for filler](#413)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[4.1.4) Package default for custom](#414)<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;[4.2) Class level](#42)<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;[4.3) Field level](#43)<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[4.3.1) Alphanumeric](#431)<br/>
@@ -17,11 +21,14 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[4.3.6) Constant](#436)<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[4.3.7) Group](#437)<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[4.3.8) Occurs](#438)<br/>
-5) Special methods [<img src="java-24.png">](https://github.com/epi155/recfm-java/blob/0.6/recfm-java-addon/README.md#5) [<img src="scala-24.png">](https://github.com/epi155/recfm-scala/blob/0.6/recfm-scala-addon/README.md#5)<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;5.1) `decode` [<img src="java-24.png">](https://github.com/epi155/recfm-java/blob/0.6/recfm-java-addon/README.md#51) [<img src="scala-24.png">](https://github.com/epi155/recfm-scala/blob/0.6/recfm-scala-addon/README.md#51)<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;5.2) `encode` [<img src="java-24.png">](https://github.com/epi155/recfm-java/blob/0.6/recfm-java-addon/README.md#52) [<img src="scala-24.png">](https://github.com/epi155/recfm-scala/blob/0.6/recfm-scala-addon/README.md#52)<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;5.3) `toString` [<img src="java-24.png">](https://github.com/epi155/recfm-java/blob/0.6/recfm-java-addon/README.md#53) [<img src="scala-24.png">](https://github.com/epi155/recfm-scala/blob/0.6/recfm-scala-addon/README.md#53)<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;5.4) Validation method [<img src="java-24.png">](https://github.com/epi155/recfm-java/blob/0.6/recfm-java-addon/README.md#54) [<img src="scala-24.png">](https://github.com/epi155/recfm-scala/blob/0.6/recfm-scala-addon/README.md#54)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[4.3.9) Group+](#439)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[4.3.10) Occurs+](#43a)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;[4.4) Interface level](#44)<br/>
+5) Special methods [<img src="java-24.png">](https://github.com/epi155/recfm-java/blob/0.7/recfm-java-addon/README.md#5) [<img src="scala-24.png">](https://github.com/epi155/recfm-scala/blob/0.6/recfm-scala-addon/README.md#5)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;5.1) `decode` [<img src="java-24.png">](https://github.com/epi155/recfm-java/blob/0.7/recfm-java-addon/README.md#51) [<img src="scala-24.png">](https://github.com/epi155/recfm-scala/blob/0.6/recfm-scala-addon/README.md#51)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;5.2) `encode` [<img src="java-24.png">](https://github.com/epi155/recfm-java/blob/0.7/recfm-java-addon/README.md#52) [<img src="scala-24.png">](https://github.com/epi155/recfm-scala/blob/0.6/recfm-scala-addon/README.md#52)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;5.3) `toString` [<img src="java-24.png">](https://github.com/epi155/recfm-java/blob/0.7/recfm-java-addon/README.md#53) [<img src="scala-24.png">](https://github.com/epi155/recfm-scala/blob/0.6/recfm-scala-addon/README.md#53)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;5.4) Validation method [<img src="java-24.png">](https://github.com/epi155/recfm-java/blob/0.7/recfm-java-addon/README.md#54) [<img src="scala-24.png">](https://github.com/epi155/recfm-scala/blob/0.6/recfm-scala-addon/README.md#54)<br/>
 
 ---
 
@@ -64,7 +71,7 @@ Configuration plugin example:
 <plugin>
     <groupId>io.github.epi155</groupId>
     <artifactId>recfm-maven-plugin</artifactId>
-    <version>0.6.1</version>
+    <version>0.7.0</version>
     <executions>
         <execution>
             <goals>
@@ -81,7 +88,7 @@ Configuration plugin example:
         <dependency>
             <groupId>io.github.epi155</groupId>
             <artifactId>recfm-java-addon</artifactId>
-            <version>0.6.2</version>
+            <version>0.7.0</version>
         </dependency>
     </dependencies>
 </plugin>
@@ -103,7 +110,7 @@ classes:
 ~~~
 
 The plungin uses goal name `generate`, default phase `generate-sources`, required dependency resolution scope `compile`, required dependency collection scope `compile`.
-Generated code examples [<img src="java-24.png">](https://github.com/epi155/recfm-java/blob/0.6/recfm-java-addon/README.md#2-xmpl) [<img src="scala-24.png">](https://github.com/epi155/recfm-scala/blob/0.6/recfm-scala-addon/README.md#2-xmpl)
+Generated code examples [<img src="java-24.png">](https://github.com/epi155/recfm-java/blob/0.7/recfm-java-addon/README.md#2-xmpl) [<img src="scala-24.png">](https://github.com/epi155/recfm-scala/blob/0.6/recfm-scala-addon/README.md#2-xmpl)
 
 Generated code may require dependencies
 
@@ -111,7 +118,7 @@ Generated code may require dependencies
         <dependency>
             <groupId>io.github.epi155</groupId>
             <artifactId>recfm-java-lib</artifactId>
-            <version>0.6.2</version>
+            <version>0.7.0</version>
         </dependency>
 ~~~
 
@@ -166,7 +173,7 @@ If you need to generate code in different languages, you need to use an executio
 <plugin>
     <groupId>io.github.epi155</groupId>
     <artifactId>recfm-maven-plugin</artifactId>
-    <version>0.6.1</version>
+    <version>0.7.0</version>
     <executions>
         <execution>
             <id>java</id>
@@ -199,12 +206,12 @@ If you need to generate code in different languages, you need to use an executio
         <dependency>
             <groupId>io.github.epi155</groupId>
             <artifactId>recfm-java-addon</artifactId>
-            <version>0.6.2</version>
+            <version>0.7.0</version>
         </dependency>
         <dependency>
             <groupId>io.github.epi155</groupId>
             <artifactId>recfm-scala-addon</artifactId>
-            <version>0.6.0</version>
+            <version>0.7.0</version>
         </dependency>
     </dependencies>
 </plugin>
@@ -230,6 +237,13 @@ are defined at the package level
 defaults:
   abc:
     check: Ascii
+    onOverflow: Trunc
+    onUnderflow: Pad
+    normalize: None
+  num:
+    onOverflow: Trunc
+    onUnderflow: Pad
+    normalize: None
   fil:
     check: None
     fill: 0
@@ -238,13 +252,41 @@ defaults:
     check: Ascii
     init: ' '
     pad: ' '
+    onOverflow: Trunc
+    onUnderflow: Pad
+    normalize: None
 ~~~
 
+#### <a name="411">4.1.1. Package default for alphanumeric</a>
+
 `defaults.abc.check` indicates which checks to perform on alphanumeric fields, the default value is **Ascii**.
+
+`defaults.abc.onOverflow` indicates how to behave on setter if the length of the supplied string is
+  greater than that expected, default value is **Trunc** (ie characters exceeding to the right are ignored).
+
+`defaults.abc.onUnderflow` indicates how to behave on setter if the length of the supplied string is
+  less than the expected one, default value is **Pad** (ie the value is completed with spaces).
+
+`defaults.abc.normalize` indicates how to behave on the getter, the padding spaces on the right can be removed,
+the default value is **None** (i.e. no spaces to the right are removed)
+
+#### <a name="412">4.1.2. Package default for numeric</a>
+
+`defaults.num.onOverflow` indicates how to behave on setter if the length of the supplied string is
+  greater than that expected, default value is **Trunc** (ie characters exceeding to the left are ignored).
+
+`defaults.num.onUnderflow` indicates how to behave on setter if the length of the supplied string is
+  less than the expected one, default value is **Pad** (ie the value is completed with zeroes).
+
+`defaults.num.normalize`
+
+#### <a name="413">4.1.3. Package default for filler</a>
 
 `defaults.fil.check` indicates which checks to perform on Filler fields, the default value is **None**.
 
 `defaults.fil.fill` is the fill character to use for fields of type *Filler*, the default value is **0** (ie **\u0000**)
+
+#### <a name="414">4.1.4. Package default for custom</a>
 
 `defaults.cus.align` indicates which the align rule on *Custom* fields, the default value is **LFT** (ie **left**).
 
@@ -253,6 +295,14 @@ defaults:
 `defaults.cus.init` is the initializer character to use for fields of type *Custom*, the default value is **' '** (ie **SPACE**)
 
 `defaults.cus.pad` is the pad character to use for fields of type *Custom*, the default value is **' '** (ie **SPACE**)
+
+`defaults.cus.onOverflow`
+
+`defaults.cus.onUnderflow`
+
+`defaults.cus.normalize`
+
+
 
 After that we can define the single classes
 
@@ -327,7 +377,7 @@ classes:
       - !Abc { name: louie, at: 51, len: 25 }
 ~~~
 
-Generated code example [<img src="java-24.png">](https://github.com/epi155/recfm-java/blob/0.6/recfm-java-addon/README.md#431-xmpl) [<img src="scala-24.png">](https://github.com/epi155/recfm-scala/blob/0.6/recfm-scala-addon/README.md#431-xmpl)
+Generated code example [<img src="java-24.png">](https://github.com/epi155/recfm-java/blob/0.7/recfm-java-addon/README.md#431-xmpl) [<img src="scala-24.png">](https://github.com/epi155/recfm-scala/blob/0.6/recfm-scala-addon/README.md#431-xmpl)
 
 The <a name='fld.redef'>redefines</a> attribute indicates that the field is a redefinition of an area, this field will
 not be considered in the overlay checks
@@ -374,16 +424,19 @@ are available:
 Tag for numeric field is `Num`, many attributes have the same meaning as in the alphanumeric case, the padding character
 is necessarily 0, the control is necessarily that the characters are numeric, the possible attributes are:
 
-| attribute                 | alt |  type   | note                  |
-|---------------------------|-----|:-------:|-----------------------|
-| [offset](#fld.offset)     | at  |   int   | **required**          |
-| [length](#fld.length)     | len |   int   | **required**          |
-| [name](#fld.name)         |     | String  | **required**          |
-| [redefines](#fld.redef)   | red | boolean | default `false`       |
-| [audit](#fld.audit)       |     | boolean | default `false`       |
-| [onOverflow](#fld.ovfl)   | ovf |  [^1]   | default `Trunc`       |
-| [onUnderflow](#fld.unfl)  | unf |  [^2]   | default `Pad`         |
-| [numericAccess](#fld.num) | num | boolean | default value `false` |
+| attribute                 | alt |  type   | note                               |
+|---------------------------|-----|:-------:|------------------------------------|
+| [offset](#fld.offset)     | at  |   int   | **required**                       |
+| [length](#fld.length)     | len |   int   | **required**                       |
+| [name](#fld.name)         |     | String  | **required**                       |
+| [redefines](#fld.redef)   | red | boolean | default `false`                    |
+| [audit](#fld.audit)       |     | boolean | default `false`                    |
+| [onOverflow](#fld.ovfl)   | ovf |  [^1]   | default `defaults.num.onOverflow`  |
+| [onUnderflow](#fld.unfl)  | unf |  [^2]   | default `defaults.num.onUnderflow` |
+| [normalize](#fld.norm)    |     |  [^5]   | default `defaults.num.normalize`   |
+| [numericAccess](#fld.num) | num | boolean | default value `false`              |
+
+[^5]: NormalizeN domain: None, Trim
 
 <a name='fld.num'>numericAccess</a> indicates whether to generate the numeric setters and getters for the field, in
 addition to the alphanumeric ones. Numeric getters are prefixed with the return type.
@@ -399,28 +452,29 @@ addition to the alphanumeric ones. Numeric getters are prefixed with the return 
       - !Num { name: date , at: 9, len: 2, num: true }
 ~~~
 
-Generated code example [<img src="java-24.png">](https://github.com/epi155/recfm-java/blob/0.6/recfm-java-addon/README.md#432-xmpl) [<img src="scala-24.png">](https://github.com/epi155/recfm-scala/blob/0.6/recfm-scala-addon/README.md#432-xmpl)
+Generated code example [<img src="java-24.png">](https://github.com/epi155/recfm-java/blob/0.7/recfm-java-addon/README.md#432-xmpl) [<img src="scala-24.png">](https://github.com/epi155/recfm-scala/blob/0.6/recfm-scala-addon/README.md#432-xmpl)
 
 #### <a name="433">4.3.3. Custom </a>
 Tag for custom field is `Cus`, a custom field is an extension of an alphanumeric field, with some additional parameters
 
-| attribute                | alt |  type   | note                         |
-|--------------------------|-----|:-------:|------------------------------|
-| [offset](#fld.offset)    | at  |   int   | **required**                 |
-| [length](#fld.length)    | len |   int   | **required**                 |
-| [name](#fld.name)        |     | String  | **required**                 |
-| [redefines](#fld.redef)  | red | boolean | default `false`              |
-| [audit](#fld.audit)      |     | boolean | default `false`              |
-| [onOverflow](#fld.ovfl)  | ovf |  [^1]   | default `Trunc`              |
-| [onUnderflow](#fld.unfl) | unf |  [^2]   | default `Pad`                |
-| [padChar](#fld.pchr)     | pad |  char   | default `defaults.cus.pad`   |
-| [initChar](#fld.ichr)    | ini |  char   | default `defaults.cus.init`  |
-| [check](#fld.ichk)       | chk |  [^4]   | default `defaults.cus.check` |
-| [regex](#fld.regx)       |     | String  | default *null*               |
-| [align](#fld.ialign)     |     |  [^5]   | default `defaults.cus.align` |
+| attribute                | alt |  type   | note                               |
+|--------------------------|-----|:-------:|------------------------------------|
+| [offset](#fld.offset)    | at  |   int   | **required**                       |
+| [length](#fld.length)    | len |   int   | **required**                       |
+| [name](#fld.name)        |     | String  | **required**                       |
+| [redefines](#fld.redef)  | red | boolean | default `false`                    |
+| [audit](#fld.audit)      |     | boolean | default `false`                    |
+| [onOverflow](#fld.ovfl)  | ovf |  [^1]   | default `defaults.cus.onOverflow`  |
+| [onUnderflow](#fld.unfl) | unf |  [^2]   | default `defaults.cus.onUnderflow` |
+| [normalize](#fld.norm)   |     |  [^3]   | default `defaults.cus.normalize`   |
+| [padChar](#fld.pchr)     | pad |  char   | default `defaults.cus.pad`         |
+| [initChar](#fld.ichr)    | ini |  char   | default `defaults.cus.init`        |
+| [check](#fld.ichk)       | chk |  [^6]   | default `defaults.cus.check`       |
+| [regex](#fld.regx)       |     | String  | default *null*                     |
+| [align](#fld.ialign)     |     |  [^7]   | default `defaults.cus.align`       |
 
-[^4]: CheckC domain: None, Ascii, Latin1, Valid, Digit, DigitOrBlank
-[^5]: AlignC domain: LFT, RGT
+[^6]: CheckC domain: None, Ascii, Latin1, Valid, Digit, DigitOrBlank
+[^7]: AlignC domain: LFT, RGT
 
 <a name='fld.ichr'>initChar</a> indicates the character to use to initialize the field when the empty constructor is
 used.
@@ -479,7 +533,7 @@ for it, the possible attributes are:
 | [offset](#fld.offset) | at  | int  | **required**                       |
 | [length](#fld.length) | len | int  | **required**                       |
 | [fillChar](#fld.fill) | chr | char | default value `defaults.fil.fill`  |
-| [check](#fld.chk)     | chk | [^3] | default value `defaults.fil.check` |
+| [check](#fld.chk)     | chk | [^4] | default value `defaults.fil.check` |
 
 <a name='fld.fill'>fillChar</a> indicates the character to use to initialize the area
 
@@ -551,7 +605,7 @@ or (yaml style):
       - ...
 ~~~
 
-Group usage example: [<img src="java-24.png">](https://github.com/epi155/recfm-java/blob/0.6/recfm-java-addon/README.md#437-xmpl) [<img src="scala-24.png">](https://github.com/epi155/recfm-scala/blob/0.6/recfm-scala-addon/README.md#437-xmpl)
+Group usage example: [<img src="java-24.png">](https://github.com/epi155/recfm-java/blob/0.7/recfm-java-addon/README.md#437-xmpl) [<img src="scala-24.png">](https://github.com/epi155/recfm-scala/blob/0.6/recfm-scala-addon/README.md#437-xmpl)
 
 In general two fields can not have the same name (only one of them would be referenceable), but a group is something other than a field. In the Java implementation there are no referencing problems if a field and a group use the same name. But in the Scala implementation this is not possible.
 
@@ -612,4 +666,25 @@ Occurs definition example:
       - ...
 ~~~
 
-Occurs usage example: [<img src="java-24.png">](https://github.com/epi155/recfm-java/blob/0.6/recfm-java-addon/README.md#438-xmpl) [<img src="scala-24.png">](https://github.com/epi155/recfm-scala/blob/0.6/recfm-scala-addon/README.md#438-xmpl)
+Occurs usage example: [<img src="java-24.png">](https://github.com/epi155/recfm-java/blob/0.7/recfm-java-addon/README.md#438-xmpl) [<img src="scala-24.png">](https://github.com/epi155/recfm-scala/blob/0.6/recfm-scala-addon/README.md#438-xmpl)
+
+### <a name="44">4.4. Interface level</a>
+
+~~~yml
+interfaces:
+  - &TransactionArea
+    name: ITransactionArea
+    length: 12
+    fields:
+      - !Abc { name: transId   , at:  1, len: 9 }
+      - !Num { name: esitoAgg  , at: 10, len: 1 }
+      - !Num { name: esitoCompl, at: 11, len: 1 }
+      - !Val { val: "\n"       , at: 12, len: 1 }
+
+classes:
+  - name: B280v2xReq
+    length: 19324
+    fields:
+      - !GRP { name: transactionArea, at:   1, len:  12, as: *TransactionArea }
+      - ...
+~~~
