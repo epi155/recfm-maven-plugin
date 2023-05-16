@@ -186,7 +186,7 @@ public class RecordFormatMojo extends AbstractMojo {
 
                 String cwd = Tools.makeDirectory(args.sourceDirectory, structs.getPackageName());
                 structs.getInterfaces()
-                        .forEach(it -> generateProxy(it, driver, structs, args));
+                        .forEach(it -> generateTrait(it, driver, structs, args));
                 structs.getClasses().
                     forEach(it -> generateClass(it, driver, structs, args));
             } catch (FileNotFoundException e) {
@@ -201,29 +201,29 @@ public class RecordFormatMojo extends AbstractMojo {
         getLog().info("Done.");
     }
 
-    private void generateProxy(ClassDefine proxy, CodeProvider driver, ClassesDefine structs, GenerateArgs ga) {
-        if (proxy.getFields().isEmpty()) return;
-        val base = proxy.getFields().get(0).getOffset();
+    private void generateTrait(ClassDefine trait, CodeProvider driver, ClassesDefine structs, GenerateArgs ga) {
+        if (trait.getFields().isEmpty()) return;
+        val base = trait.getFields().get(0).getOffset();
 
-        val wrtPackage = structs.getPackageName();
-        getLog().info("- Prepare interface "+proxy.getName()+" ...");
+        val namespace = structs.getPackageName();
+        getLog().info("- Prepare interface "+trait.getName()+" ...");
 
-        proxy.checkForVoid();
-        boolean checkSuccesful = proxy.noBadName();
-        checkSuccesful &= proxy.noDuplicateName(Tools::testCollision);
-        checkSuccesful &= proxy.noHole(base);
-        checkSuccesful &= proxy.noOverlap(base);
+        trait.checkForVoid();
+        boolean checkSuccesful = trait.noBadName();
+        checkSuccesful &= trait.noDuplicateName(Tools::testCollision);
+        checkSuccesful &= trait.noHole(base);
+        checkSuccesful &= trait.noOverlap(base);
         if (checkSuccesful) {
             getLog().info("  [####o] Creating ...");
-            driver.createInterface(generateDirectory, wrtPackage, proxy, ga);
+            driver.createInterface(namespace, trait, ga);
             getLog().info("  [#####] Created.");
         } else {
-            throw new ClassDefineException("Class <" + proxy.getName() + "> bad defined");
+            throw new ClassDefineException("Class <" + trait.getName() + "> bad defined");
         }
     }
 
     private void generateClass(ClassDefine clazz, CodeProvider driver, ClassesDefine structs, GenerateArgs ga) {
-        val wrtPackage = structs.getPackageName();
+        val namespace = structs.getPackageName();
         val defaults = structs.getDefaults();
 
         getLog().info("- Prepare class "+clazz.getName()+" ...");
@@ -236,7 +236,7 @@ public class RecordFormatMojo extends AbstractMojo {
         checkSuccesful &= clazz.noOverlap();
         if (checkSuccesful) {
             getLog().info("  [####o] Creating ...");
-            driver.createClass(generateDirectory, wrtPackage, clazz, ga, defaults);
+            driver.createClass(namespace, clazz, ga, defaults);
             getLog().info("  [#####] Created.");
         } else {
             throw new ClassDefineException("Class <" + clazz.getName() + "> bad defined");
