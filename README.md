@@ -668,7 +668,77 @@ Occurs definition example:
 
 Occurs usage example: [<img src="java-24.png">](https://github.com/epi155/recfm-java/blob/0.7/recfm-java-addon/README.md#438-xmpl) [<img src="scala-24.png">](https://github.com/epi155/recfm-scala/blob/0.6/recfm-scala-addon/README.md#438-xmpl)
 
+#### <a name="439">4.3.9. Group+ </a>
+
+The `GRP` tag allows you to define a group of fields by referencing an [interface](#44), the possible attributes are:
+
+| attribute               | alt |  type   | note                             |
+|-------------------------|-----|:-------:|----------------------------------|
+| [offset](#GRP.offset)   | at  |   int   | **required**                     |
+| [length](#GRP.length)   | len |   int   | **required**                     |
+| [name](#GRP.name)       |     | String  | **required**                     |
+| [redefines](#GRP.redef) | red | boolean | default `false`                  |
+| [typeDef](#GRP.defs)    | as  | ClsDef  | **required** interface reference |
+
+The <a name='GRP.offset'>offset</a> attribute indicates the starting position of the group (starting from 1).
+The <a name='GRP.length'>length</a> attribute indicates the length of the group.
+The <a name='GRP.name'>name</a> attribute indicates the name of the group.
+The <a name='GRP.redef'>redefines</a> attribute indicates that the group is a redefinition of an area, this group will
+not be considered in the overlay checks
+The <a name='GRP.defs'>typeDef</a> attribute indicates the interface to be used as a model to define the fields of the group
+
+Group+ definition example:
+
+~~~yml
+classes:
+  - name: B280v2xReq
+    length: 19324
+    fields:
+      - !GRP { name: transactionArea, at:   1, len:  12, as: *TransactionArea }
+      - ...
+~~~
+
+#### <a name="43a">4.3.10. Occurs+ </a>
+
+The `OCC` tag allows you to define an occurs group of fields by referencing an [interface](#44), the possible attributes are:
+
+| attribute               | alt |  type   | note                             |
+|-------------------------|-----|:-------:|----------------------------------|
+| [offset](#OCC.offset)   | at  |   int   | **required**                     |
+| [length](#OCC.length)   | len |   int   | **required**                     |
+| [name](#OCC.name)       |     | String  | **required**                     |
+| [redefines](#OCC.redef) | red | boolean | default `false`                  |
+| [typeDef](#OCC.defs)    | as  |  array  | **required** interface reference |
+| [times](#OCC.times)     | x   |   int   | **required** occurrences         |
+
+The <a name='OCC.offset'>offset</a> attribute indicates the starting position of the first group (starting from 1).
+The <a name='OCC.length'>length</a> attribute indicates the length of a single group.
+The <a name='OCC.name'>name</a> attribute indicates the name of the group.
+The <a name='OCC.redef'>redefines</a> attribute indicates that the group is a redefinition of an area, this group will
+not be considered in the overlay checks
+The <a name='OCC.defs'>typeDef</a> attribute indicates the interface to be used as a model to define the fields of the group
+The <a name='OCC.times'>times</a> attribute indicates the number of times the group is repeated
+
+Occurs+ definition example:
+
+~~~yml
+classes:
+  - name: B320v2xRes
+    length: 19324
+    fields:
+      - !GRP { name: transactionArea, at:   1, len:  12, as: *TransactionArea }
+      - !GRP { name: messageArea    , at:  13, len: 100, as: *MessageArea }
+      - !GRP { name: segmentArea    , at: 113, len:  11, as: *SegmentArea }
+      - !Grp { name: rs1            , at: 124, len: 253, fields: [ ... ] }
+      - !OCC { name: rs             , at: 377, len: 146, x: 129, as: *B320v2xItem }
+      - !Fil {                      at: 19211, len: 114 }
+~~~
+
 ### <a name="44">4.4. Interface level</a>
+
+Sometimes there may be structures that have a common partial definition.
+In these cases it is useful to be able to manage these areas in the same way, as if they were the same sub-structure.
+This can be done by defining an interface that defines the common sub-structure
 
 ~~~yml
 interfaces:
@@ -680,7 +750,11 @@ interfaces:
       - !Num { name: esitoAgg  , at: 10, len: 1 }
       - !Num { name: esitoCompl, at: 11, len: 1 }
       - !Val { val: "\n"       , at: 12, len: 1 }
+~~~
 
+and then we can define the common substructure in the class by referencing the interface.
+
+~~~yml
 classes:
   - name: B280v2xReq
     length: 19324
@@ -688,3 +762,6 @@ classes:
       - !GRP { name: transactionArea, at:   1, len:  12, as: *TransactionArea }
       - ...
 ~~~
+
+For the definition of the interface fields the same rules apply as for the classes.
+The only exception is the offset of the first field defined in the interface, the natural value would be 1, but any value can be used, when the interface is applied to the class, the offset is corrected to fit the structure of the class

@@ -22,7 +22,10 @@ import org.yaml.snakeyaml.constructor.Constructor;
 import org.yaml.snakeyaml.representer.Representer;
 
 import java.io.*;
+import java.nio.file.Files;
 import java.util.ServiceLoader;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 @Mojo(name = "generate",
         defaultPhase = LifecyclePhase.GENERATE_SOURCES,
@@ -43,6 +46,8 @@ public class RecordFormatMojo extends AbstractMojo {
     private static final String GET_CHECK = "getCheck";
     private static final String SET_CHECK = "setCheck";
 
+    private static final Pattern pattern = Pattern.compile("^\\s*#!import\\s+(\\S+)\\s*$");
+//    private static final Pattern pattern = Pattern.compile("\\s*#!import\\s+\"([^\"]+)\"\\s*");
     /**
      * <p>
      * Generated code will be written under this directory.
@@ -65,12 +70,15 @@ public class RecordFormatMojo extends AbstractMojo {
     @Parameter(defaultValue = "4", property = "maven.recfm.align", required = true)
     private int align;
 
-    @Parameter(defaultValue = "false", property = "maven.recfm.doc", required = true)
+    @Parameter(defaultValue = "true", property = "maven.recfm.doc", required = true)
     private boolean doc;
     @Parameter(defaultValue = "true", property = "maven.recfm.enforceGetter", required = true)
     private boolean enforceGetter;
     @Parameter(defaultValue = "true", property = "maven.recfm.enforceSetter", required = true)
     private boolean enforceSetter;
+
+    @Parameter(defaultValue = "false", property = "maven.recfm.preprocessor", required = true)
+    private boolean preprocessor;
 
     @SuppressWarnings("MismatchedReadAndWriteOfArray")
     @Parameter(required = true)
@@ -181,16 +189,23 @@ public class RecordFormatMojo extends AbstractMojo {
         getLog().info("Settings directory: " + settingsDirectory);
         for (String setting : settings) {
             getLog().info("Generate from " + setting);
-            try (InputStream inputStream = new FileInputStream(settingsDirectory + File.separator + setting)) {
-                ClassesDefine structs = yaml.load(inputStream);
-
-                String cwd = Tools.makeDirectory(args.sourceDirectory, structs.getPackageName());
-                structs.getInterfaces()
-                        .forEach(it -> generateTrait(it, driver, structs, args));
-                structs.getClasses().
-                    forEach(it -> generateClass(it, driver, structs, args));
-            } catch (FileNotFoundException e) {
+            File configFile = new File(settingsDirectory + File.separator + setting);
+            if (!configFile.exists()) {
                 getLog().warn("Setting " + setting + " does not exist, ignored.");
+                continue;
+            }
+            try {
+                if (preprocessor) {
+                    configFile = preprocess(configFile);
+                }
+                try (InputStream inputStream = Files.newInputStream(configFile.toPath())) {
+                    ClassesDefine structs = yaml.load(inputStream);
+
+                    String cwd = Tools.makeDirectory(args.sourceDirectory, structs.getPackageName());
+                    structs.getInterfaces().forEach(it -> generateTrait(it, driver, structs, args));
+                    structs.getClasses().forEach(it -> generateClass(it, driver, structs, args));
+
+                }
             } catch (Exception e) {
                 getLog().error(e.toString());
                 throw new MojoExecutionException("Failed to execute plugin", e);
@@ -199,6 +214,38 @@ public class RecordFormatMojo extends AbstractMojo {
         setupMavenPaths();
 
         getLog().info("Done.");
+    }
+
+    private File preprocess(File configFile) throws IOException {
+        File tempConfig = File.createTempFile("tecfm-", ".yaml");
+        tempConfig.deleteOnExit();
+        try (BufferedWriter bw = Files.newBufferedWriter(tempConfig.toPath())) {
+            append(bw, configFile);
+        }
+        return tempConfig;
+    }
+
+    private void append(BufferedWriter bw, File configFile) throws IOException {
+        try(BufferedReader br = Files.newBufferedReader(configFile.toPath())) {
+            String line;
+            while((line = br.readLine()) != null) {
+                Matcher matcher = pattern.matcher(line);
+                if(matcher.matches()) {
+                    String inside = matcher.group(1);
+                    File insideConf = inside.startsWith(File.separator) ?
+                            new File(inside) : new File(settingsDirectory + File.separator + inside);
+                    if (insideConf.exists()) {
+                        getLog().info("<< import "+inside);
+                        append(bw, insideConf);
+                    } else {
+                        getLog().warn("Skip import "+insideConf.getAbsolutePath());
+                    }
+                } else {
+                    bw.write(line);
+                    bw.newLine();
+                }
+            }
+        }
     }
 
     private void generateTrait(ClassDefine trait, CodeProvider driver, ClassesDefine structs, GenerateArgs ga) {
@@ -258,7 +305,6 @@ public class RecordFormatMojo extends AbstractMojo {
         } else {
             throw new CodeDriverException(codeProviderClassName);
         }
-
     }
     private void setupMavenPaths() {
         if (getAddCompileSourceRoot()) {
