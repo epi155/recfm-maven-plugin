@@ -13,16 +13,17 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[4.1.4) Package default for custom](#414)<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;[4.2) Class level](#42)<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;[4.3) Field level](#43)<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[4.3.1) Alphanumeric](#431)<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[4.3.2) Numeric](#432)<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[4.3.3) Custom](#433)<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[4.3.4) Domain](#434)<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[4.3.5) Filler](#435)<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[4.3.6) Constant](#436)<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[4.3.7) Group](#437)<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[4.3.8) Occurs](#438)<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[4.3.9) Group+](#439)<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[4.3.10) Occurs+](#43a)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[4.3.1) `Abc` Alphanumeric](#431)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[4.3.2) `Num` Numeric](#432)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[4.3.3) `Cus` Custom](#433)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[4.3.4) `Dom` Domain](#434)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[4.3.5) `Fil` Filler](#435)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[4.3.6) `Val` Constant](#436)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[4.3.7) `Grp` Group](#437)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[4.3.8) `Occ` Occurs](#438)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[4.3.9) `GRP` Group (with interface)](#439)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[4.3.10) `OCC` Occurs (with interface)](#43a)<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;[4.3.11) `Emb` Embedded group (with interface)](#43b)<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;[4.4) Interface level](#44)<br/>
 5) Special methods [<img src="java-24.png">](https://github.com/epi155/recfm-java/blob/0.7/recfm-java-addon/README.md#5) [<img src="scala-24.png">](https://github.com/epi155/recfm-scala/blob/0.6/recfm-scala-addon/README.md#5)<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;5.1) `decode` [<img src="java-24.png">](https://github.com/epi155/recfm-java/blob/0.7/recfm-java-addon/README.md#51) [<img src="scala-24.png">](https://github.com/epi155/recfm-scala/blob/0.6/recfm-scala-addon/README.md#51)<br/>
@@ -146,7 +147,7 @@ is `${project.build.resources[0].directory}`, ie **`src/main/resources`**
 : List of configuration files (required).
 
 `doc` or property `maven.recfm.doc`
-: Indicates whether to generate the documentation on setters and getters, default is **`false`**.
+: Indicates whether to generate the documentation on setters and getters, default is **`true`**.
 
 `align` or property `maven.recfm.align`
 : Indicates the minimum alignment of numeric fields when numeric representation is required. The Default value is **4**,
@@ -668,7 +669,7 @@ Occurs definition example:
 
 Occurs usage example: [<img src="java-24.png">](https://github.com/epi155/recfm-java/blob/0.7/recfm-java-addon/README.md#438-xmpl) [<img src="scala-24.png">](https://github.com/epi155/recfm-scala/blob/0.6/recfm-scala-addon/README.md#438-xmpl)
 
-#### <a name="439">4.3.9. Group+ </a>
+#### <a name="439">4.3.9. Group with interface </a>
 
 The `GRP` tag allows you to define a group of fields by referencing an [interface](#44), the possible attributes are:
 
@@ -678,7 +679,7 @@ The `GRP` tag allows you to define a group of fields by referencing an [interfac
 | [length](#GRP.length)   | len |   int   | **required**                     |
 | [name](#GRP.name)       |     | String  | **required**                     |
 | [redefines](#GRP.redef) | red | boolean | default `false`                  |
-| [typeDef](#GRP.defs)    | as  | ClsDef  | **required** interface reference |
+| [typeDef](#GRP.defs)    | as  | TypDef  | **required** interface reference |
 
 The <a name='GRP.offset'>offset</a> attribute indicates the starting position of the group (starting from 1).
 The <a name='GRP.length'>length</a> attribute indicates the length of the group.
@@ -687,7 +688,7 @@ The <a name='GRP.redef'>redefines</a> attribute indicates that the group is a re
 not be considered in the overlay checks
 The <a name='GRP.defs'>typeDef</a> attribute indicates the interface to be used as a model to define the fields of the group
 
-Group+ definition example:
+Group (with interface) definition example:
 
 ~~~yml
 classes:
@@ -698,7 +699,7 @@ classes:
       - ...
 ~~~
 
-#### <a name="43a">4.3.10. Occurs+ </a>
+#### <a name="43a">4.3.10. Occurs with interface </a>
 
 The `OCC` tag allows you to define an occurs group of fields by referencing an [interface](#44), the possible attributes are:
 
@@ -708,7 +709,7 @@ The `OCC` tag allows you to define an occurs group of fields by referencing an [
 | [length](#OCC.length)   | len |   int   | **required**                     |
 | [name](#OCC.name)       |     | String  | **required**                     |
 | [redefines](#OCC.redef) | red | boolean | default `false`                  |
-| [typeDef](#OCC.defs)    | as  |  array  | **required** interface reference |
+| [typeDef](#OCC.defs)    | as  | TypDef  | **required** interface reference |
 | [times](#OCC.times)     | x   |   int   | **required** occurrences         |
 
 The <a name='OCC.offset'>offset</a> attribute indicates the starting position of the first group (starting from 1).
@@ -719,7 +720,7 @@ not be considered in the overlay checks
 The <a name='OCC.defs'>typeDef</a> attribute indicates the interface to be used as a model to define the fields of the group
 The <a name='OCC.times'>times</a> attribute indicates the number of times the group is repeated
 
-Occurs+ definition example:
+Occurs (with interface) definition example:
 
 ~~~yml
 classes:
@@ -733,6 +734,32 @@ classes:
       - !OCC { name: rs             , at: 377, len: 146, x: 129, as: *B320v2xItem }
       - !Fil {                      at: 19211, len: 114 }
 ~~~
+
+#### <a name="43b">4.3.11. Embedded group with interface </a>
+
+The `Emb` tag allows you to insert the fields defined in an [interface](#44) into the current structure, the possible attributes are:
+
+| attribute               | alt |  type   | note                             |
+|-------------------------|-----|:-------:|----------------------------------|
+| [source](#emb.defs)     | src | TypDef  | **required** interface reference |
+| [offset](#emb.offset)   | at  |   int   | **required**                     |
+| [length](#emb.length)   | len |   int   | **required**                     |
+
+The <a name='emb.defs'>typeDef</a> attribute indicates the interface to be used as a model to insert the fields
+The <a name='emb.offset'>offset</a> attribute indicates the starting position of the first group (starting from 1).
+The <a name='emb.length'>length</a> attribute indicates the length of a single group.
+
+Embedded group definition example:
+
+~~~yml
+classes:
+  - name: B280v2xReq
+    length: 19324
+    fields:
+      - !Emb { src: *TransactionArea, at:   1, len:  12 }
+      - ...
+~~~
+
 
 ### <a name="44">4.4. Interface level</a>
 

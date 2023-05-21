@@ -119,8 +119,9 @@ public class RecordFormatMojo extends AbstractMojo {
         tuningField(constructor, representer, "!Val", FieldConstant.class);
         tuningField(constructor, representer, "!Grp", FieldGroup.class);
         tuningField(constructor, representer, "!Occ", FieldOccurs.class);
-        tuningField(constructor, representer, "!GRP", FieldGroupProxy.class);
-        tuningField(constructor, representer, "!OCC", FieldOccursProxy.class);
+        tuningField(constructor, representer, "!GRP", FieldGroupTrait.class);
+        tuningField(constructor, representer, "!OCC", FieldOccursTrait.class);
+        tuningField(constructor, representer, "!Emb", FieldEmbedGroup.class);
 
         return new Yaml(constructor, representer);
     }
@@ -146,17 +147,19 @@ public class RecordFormatMojo extends AbstractMojo {
         else if (f == FieldConstant.class)
             td.substituteProperty("val", String.class, "getValue", "setValue");
         else if (f == FieldFiller.class) {
-            td.substituteProperty("chr", String.class, "getFillChar", "setFillChar");
+            td.substituteProperty("chr", Character.class, "getFillChar", "setFillChar");
             td.substituteProperty("chk", CheckChar.class, GET_CHECK, SET_CHECK);
         } else if (f == FieldCustom.class) {
             td.substituteProperty("ini", Character.class, "getInitChar", "setInitChar");
             td.substituteProperty("pad", Character.class, "getPadChar", "setPadChar");
             td.substituteProperty("chk", CheckUser.class, GET_CHECK, SET_CHECK);
-        } else if (f == FieldGroupProxy.class) {
-            td.substituteProperty("as", ClassDefine.class, "getTypeDef", "setTypeDef");
-        } else if (f == FieldOccursProxy.class) {
-            td.substituteProperty("as", ClassDefine.class, "getTypeDef", "setTypeDef");
+        } else if (f == FieldGroupTrait.class) {
+            td.substituteProperty("as", TraitDefine.class, "getTypeDef", "setTypeDef");
+        } else if (f == FieldOccursTrait.class) {
+            td.substituteProperty("as", TraitDefine.class, "getTypeDef", "setTypeDef");
             td.substituteProperty("x", int.class, "getTimes", "setTimes");
+        } else if (f == FieldEmbedGroup.class) {
+            td.substituteProperty("src", TraitDefine.class, "getSource", "setSource");
         }
         c.addTypeDescription(td);
         r.addTypeDescription(td);
@@ -248,7 +251,7 @@ public class RecordFormatMojo extends AbstractMojo {
         }
     }
 
-    private void generateTrait(ClassDefine trait, CodeProvider driver, ClassesDefine structs, GenerateArgs ga) {
+    private void generateTrait(TraitDefine trait, CodeProvider driver, ClassesDefine structs, GenerateArgs ga) {
         if (trait.getFields().isEmpty()) return;
         val base = trait.getFields().get(0).getOffset();
 
