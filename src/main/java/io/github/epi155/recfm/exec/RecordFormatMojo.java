@@ -23,7 +23,9 @@ import org.yaml.snakeyaml.representer.Representer;
 
 import java.io.*;
 import java.nio.file.Files;
+import java.util.HashSet;
 import java.util.ServiceLoader;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -105,6 +107,8 @@ public class RecordFormatMojo extends AbstractMojo {
 
     @Parameter
     private String codeProviderClassName;
+
+    private final Set<String> classLogbook = new HashSet<>();
 
     public static Yaml prepareYaml() {
         Constructor constructor = new Constructor(ClassesDefine.class, new LoaderOptions());
@@ -204,7 +208,7 @@ public class RecordFormatMojo extends AbstractMojo {
                 try (InputStream inputStream = Files.newInputStream(configFile.toPath())) {
                     ClassesDefine structs = yaml.load(inputStream);
 
-                    String cwd = Tools.makeDirectory(args.sourceDirectory, structs.getPackageName());
+                    Tools.makeDirectory(args.sourceDirectory, structs.getPackageName());
                     structs.getInterfaces().forEach(it -> generateTrait(it, driver, structs, args));
                     structs.getClasses().forEach(it -> generateClass(it, driver, structs, args));
 
@@ -257,6 +261,10 @@ public class RecordFormatMojo extends AbstractMojo {
 
         val namespace = structs.getPackageName();
         getLog().info("- Prepare interface "+trait.getName()+" ...");
+        val classFullName = namespace+"."+trait.getName();
+        if (! classLogbook.add(classFullName)) {
+            throw new ClassDefineException("Class <" + classFullName + "> duplicated");
+        }
 
         trait.checkForVoid();
         boolean checkSuccesful = trait.noBadName();
@@ -277,17 +285,22 @@ public class RecordFormatMojo extends AbstractMojo {
         val defaults = structs.getDefaults();
 
         getLog().info("- Prepare class "+clazz.getName()+" ...");
+        val classFullName = namespace+"."+clazz.getName();
+        if (! classLogbook.add(classFullName)) {
+            throw new ClassDefineException("Class <" + classFullName + "> duplicated");
+        }
 
         clazz.checkForVoid();
 
         boolean checkSuccesful = clazz.noBadName();
+        checkSuccesful &= clazz.checkLength();
         checkSuccesful &= clazz.noDuplicateName(Tools::testCollision);
         checkSuccesful &= clazz.noHole();
         checkSuccesful &= clazz.noOverlap();
         if (checkSuccesful) {
-            getLog().info("  [####o] Creating ...");
+            getLog().info("  [#####o] Creating ...");
             driver.createClass(namespace, clazz, ga, defaults);
-            getLog().info("  [#####] Created.");
+            getLog().info("  [######] Created.");
         } else {
             throw new ClassDefineException("Class <" + clazz.getName() + "> bad defined");
         }
