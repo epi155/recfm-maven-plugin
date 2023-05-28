@@ -103,6 +103,7 @@ public class RecordFormatMojo extends AbstractMojo {
         c0.addTypeDescription(new TraitDescription(factory));
         c0.addTypeDescription(new AbcDescription(factory));
         c0.addTypeDescription(new NumDescription(factory));
+        c0.addTypeDescription(new NuxDescription(factory));
         c0.addTypeDescription(new CusDescription(factory));
         c0.addTypeDescription(new DomDescription(factory));
         c0.addTypeDescription(new FilDescription(factory));
@@ -113,14 +114,16 @@ public class RecordFormatMojo extends AbstractMojo {
         c0.addTypeDescription(new GrpTraitDescription(factory));
         c0.addTypeDescription(new OccTraitDescription(factory));
 
+        c0.addTypeDescription(new InitNuxModeDescription());
+
         Yaml yaml = new Yaml(c0);
 
         val args = GenerateArgs.builder()
             .sourceDirectory(generateDirectory)
             .align(align)
             .doc(doc)
-            .setCheck(enforceSetter)
-            .getCheck(enforceGetter)
+            .checkSetter(enforceSetter)
+            .checkGetter(enforceGetter)
             .group(plugin.getGroupId())
             .artifact(plugin.getArtifactId())
             .version(plugin.getVersion())

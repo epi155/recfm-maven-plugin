@@ -18,6 +18,8 @@ public class AbcDescription extends TypeDescription {
         substituteProperty("ovf", OverflowAction.class, null, "setOnOverflow");
         substituteProperty("unf", UnderflowAction.class, null, "setOnUnderflow");
         substituteProperty("norm", NormalizeAbcMode.class, null, "setNormalize");
+        substituteProperty("get", Boolean.class, null, "setCheckGetter");
+        substituteProperty("set", Boolean.class, null, "setCheckSetter");
     }
     public Object newInstance(Node node) {
         return factory.newAbcModel();
