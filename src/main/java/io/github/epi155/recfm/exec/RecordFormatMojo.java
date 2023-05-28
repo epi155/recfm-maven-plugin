@@ -1,10 +1,7 @@
 package io.github.epi155.recfm.exec;
 
 
-import io.github.epi155.recfm.api.CodeProvider;
-import io.github.epi155.recfm.type.*;
-import io.github.epi155.recfm.util.GenerateArgs;
-import io.github.epi155.recfm.util.Tools;
+import io.github.epi155.recfm.api.*;
 import lombok.Getter;
 import lombok.val;
 import org.apache.maven.plugin.AbstractMojo;
@@ -14,18 +11,18 @@ import org.apache.maven.plugins.annotations.Mojo;
 import org.apache.maven.plugins.annotations.Parameter;
 import org.apache.maven.plugins.annotations.ResolutionScope;
 import org.apache.maven.project.MavenProject;
-import org.yaml.snakeyaml.DumperOptions;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.yaml.snakeyaml.LoaderOptions;
-import org.yaml.snakeyaml.TypeDescription;
 import org.yaml.snakeyaml.Yaml;
 import org.yaml.snakeyaml.constructor.Constructor;
-import org.yaml.snakeyaml.representer.Representer;
 
 import java.io.*;
 import java.nio.file.Files;
 import java.util.HashSet;
 import java.util.ServiceLoader;
 import java.util.Set;
+import java.util.StringTokenizer;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -35,19 +32,6 @@ import java.util.regex.Pattern;
         requiresDependencyCollection = ResolutionScope.COMPILE
 )
 public class RecordFormatMojo extends AbstractMojo {
-
-    private static final String SET_LENGTH = "setLength";
-    private static final String GET_LENGTH = "getLength";
-
-    private static final String SET_OFFSET = "setOffset";
-    private static final String GET_OFFSET = "getOffset";
-
-    private static final String SET_REDEFINES = "setRedefines";
-    private static final String GET_REDEFINES = "getRedefines";
-
-    private static final String GET_CHECK = "getCheck";
-    private static final String SET_CHECK = "setCheck";
-
     private static final Pattern pattern = Pattern.compile("^\\s*#!import\\s+(\\S+)\\s*$");
 //    private static final Pattern pattern = Pattern.compile("\\s*#!import\\s+\"([^\"]+)\"\\s*");
     /**
@@ -110,76 +94,26 @@ public class RecordFormatMojo extends AbstractMojo {
 
     private final Set<String> classLogbook = new HashSet<>();
 
-    public static Yaml prepareYaml() {
-        Constructor constructor = new Constructor(ClassesDefine.class, new LoaderOptions());
-        Representer representer = new Representer(new DumperOptions());
-
-        tuningClassDef(constructor, representer);
-        tuningField(constructor, representer, "!Abc", FieldAbc.class);
-        tuningField(constructor, representer, "!Num", FieldNum.class);
-        tuningField(constructor, representer, "!Cus", FieldCustom.class);
-        tuningField(constructor, representer, "!Dom", FieldDomain.class);
-        tuningField(constructor, representer, "!Fil", FieldFiller.class);
-        tuningField(constructor, representer, "!Val", FieldConstant.class);
-        tuningField(constructor, representer, "!Grp", FieldGroup.class);
-        tuningField(constructor, representer, "!Occ", FieldOccurs.class);
-        tuningField(constructor, representer, "!GRP", FieldGroupTrait.class);
-        tuningField(constructor, representer, "!OCC", FieldOccursTrait.class);
-        tuningField(constructor, representer, "!Emb", FieldEmbedGroup.class);
-
-        return new Yaml(constructor, representer);
-    }
-
-    private static void tuningField(Constructor c, Representer r, String tag, Class<? extends NakedField> f) {
-        TypeDescription td = new TypeDescription(f, tag);
-        td.substituteProperty("at", int.class, GET_OFFSET, SET_OFFSET);
-        td.substituteProperty("len", int.class, GET_LENGTH, SET_LENGTH);
-        if (NamedField.class.isAssignableFrom(f)) {
-            td.substituteProperty("red", boolean.class, GET_REDEFINES, SET_REDEFINES);
-        }
-        if (FloatingField.class.isAssignableFrom(f)) {
-            td.substituteProperty("ovf", OverflowAction.class, "getOnOverflow", "setOnOverflow");
-            td.substituteProperty("unf", UnderflowAction.class, "getOnUnderflow", "setOnUnderflow");
-        }
-        if (f == FieldOccurs.class)
-            td.substituteProperty("x", int.class, "getTimes", "setTimes");
-        else if (f == FieldAbc.class) {
-            td.substituteProperty("pad", Character.class, "getPadChar", "setPadChar");
-            td.substituteProperty("chk", CheckChar.class, GET_CHECK, SET_CHECK);
-        } else if (f == FieldNum.class)
-            td.substituteProperty("num", boolean.class, "getNumericAccess", "setNumericAccess");
-        else if (f == FieldConstant.class)
-            td.substituteProperty("val", String.class, "getValue", "setValue");
-        else if (f == FieldFiller.class) {
-            td.substituteProperty("chr", Character.class, "getFillChar", "setFillChar");
-            td.substituteProperty("chk", CheckChar.class, GET_CHECK, SET_CHECK);
-        } else if (f == FieldCustom.class) {
-            td.substituteProperty("ini", Character.class, "getInitChar", "setInitChar");
-            td.substituteProperty("pad", Character.class, "getPadChar", "setPadChar");
-            td.substituteProperty("chk", CheckUser.class, GET_CHECK, SET_CHECK);
-        } else if (f == FieldGroupTrait.class) {
-            td.substituteProperty("as", TraitDefine.class, "getTypeDef", "setTypeDef");
-        } else if (f == FieldOccursTrait.class) {
-            td.substituteProperty("as", TraitDefine.class, "getTypeDef", "setTypeDef");
-            td.substituteProperty("x", int.class, "getTimes", "setTimes");
-        } else if (f == FieldEmbedGroup.class) {
-            td.substituteProperty("src", TraitDefine.class, "getSource", "setSource");
-        }
-        c.addTypeDescription(td);
-        r.addTypeDescription(td);
-    }
-
-    private static void tuningClassDef(Constructor constructor, Representer representer) {
-        TypeDescription td = new TypeDescription(ClassDefine.class);
-        td.substituteProperty("len", int.class, GET_LENGTH, SET_LENGTH);
-        constructor.addTypeDescription(td);
-        representer.addTypeDescription(td);
-    }
-
     public void execute() throws MojoExecutionException {
-        getLog().info("Check for output directory ...");
+        val driver = getCodeProvider();
+        val factory = driver.getInstance();
 
-        Yaml yaml = prepareYaml();
+        Constructor c0 = new Constructor(MasterBook.class, new LoaderOptions());
+        c0.addTypeDescription(new ClassDescription(factory));
+        c0.addTypeDescription(new TraitDescription(factory));
+        c0.addTypeDescription(new AbcDescription(factory));
+        c0.addTypeDescription(new NumDescription(factory));
+        c0.addTypeDescription(new CusDescription(factory));
+        c0.addTypeDescription(new DomDescription(factory));
+        c0.addTypeDescription(new FilDescription(factory));
+        c0.addTypeDescription(new ValDescription(factory));
+        c0.addTypeDescription(new EmbDescription(factory));
+        c0.addTypeDescription(new GrpDescription(factory));
+        c0.addTypeDescription(new OccDescription(factory));
+        c0.addTypeDescription(new GrpTraitDescription(factory));
+        c0.addTypeDescription(new OccTraitDescription(factory));
+
+        Yaml yaml = new Yaml(c0);
 
         val args = GenerateArgs.builder()
             .sourceDirectory(generateDirectory)
@@ -192,7 +126,6 @@ public class RecordFormatMojo extends AbstractMojo {
             .version(plugin.getVersion())
             .build();
 
-        val driver = getCodeProvider();
         getLog().info("Settings directory: " + settingsDirectory);
         for (String setting : settings) {
             getLog().info("Generate from " + setting);
@@ -206,13 +139,19 @@ public class RecordFormatMojo extends AbstractMojo {
                     configFile = preprocess(configFile);
                 }
                 try (InputStream inputStream = Files.newInputStream(configFile.toPath())) {
-                    ClassesDefine structs = yaml.load(inputStream);
+                    MasterBook structs = yaml.load(inputStream);
 
-                    Tools.makeDirectory(args.sourceDirectory, structs.getPackageName());
-                    structs.getInterfaces().forEach(it -> generateTrait(it, driver, structs, args));
-                    structs.getClasses().forEach(it -> generateClass(it, driver, structs, args));
-
+                    String namespace = structs.getPackageName();
+                    makeDirectory(args.sourceDirectory, namespace);
+                    for(val it: structs.getInterfaces()) {
+                        generateTrait(it, namespace, args);
+                    }
+                    for(val it: structs.getClasses()) {
+                        generateClass(it, namespace, args, structs.getDefaults());
+                    }
                 }
+            } catch (MojoExecutionException e) {
+                throw e;
             } catch (Exception e) {
                 getLog().error(e.toString());
                 throw new MojoExecutionException("Failed to execute plugin", e);
@@ -221,6 +160,30 @@ public class RecordFormatMojo extends AbstractMojo {
         setupMavenPaths();
 
         getLog().info("Done.");
+    }
+
+    public void makeDirectory(@NotNull File base, @Nullable String packg) throws MojoExecutionException {
+        if (!base.exists()) {
+            getLog().info("Base Directory <"+base.getName()+"> does not exist, creating");
+            if (!base.mkdirs())
+                throw new MojoExecutionException("Error creating Base Directory <" + base.getName() + ">");
+        }
+        if (!base.isDirectory()) throw new MojoExecutionException("Base Directory <" + base.getName() + "> is not a Directory");
+        if (packg == null) return;
+        StringTokenizer st = new StringTokenizer(packg, ".");
+        String cwd = base.getAbsolutePath();
+        while (st.hasMoreElements()) {
+            val d = st.nextElement();
+            val tmp = cwd + File.separator + d;
+            mkdir(tmp);
+            cwd = tmp;
+        }
+    }
+
+    private static void mkdir(String tmp) throws MojoExecutionException {
+        val f = new File(tmp);
+        if ((!f.exists()) && (!f.mkdir()))
+            throw new MojoExecutionException("Cannot create directory <" + tmp + ">");
     }
 
     private File preprocess(File configFile) throws IOException {
@@ -255,55 +218,22 @@ public class RecordFormatMojo extends AbstractMojo {
         }
     }
 
-    private void generateTrait(TraitDefine trait, CodeProvider driver, ClassesDefine structs, GenerateArgs ga) {
-        if (trait.getFields().isEmpty()) return;
-        val base = trait.getFields().get(0).getOffset();
-
-        val namespace = structs.getPackageName();
-        getLog().info("- Prepare interface "+trait.getName()+" ...");
+    private void generateTrait(TraitModel trait, String namespace, GenerateArgs ga) throws MojoExecutionException {
         val classFullName = namespace+"."+trait.getName();
         if (! classLogbook.add(classFullName)) {
-            throw new ClassDefineException("Class <" + classFullName + "> duplicated");
+            throw new MojoExecutionException("Class <" + classFullName + "> duplicated");
         }
 
-        trait.checkForVoid();
-        boolean checkSuccesful = trait.noBadName();
-        checkSuccesful &= trait.noDuplicateName(Tools::testCollision);
-        checkSuccesful &= trait.noHole(base);
-        checkSuccesful &= trait.noOverlap(base);
-        if (checkSuccesful) {
-            getLog().info("  [####o] Creating ...");
-            driver.createInterface(namespace, trait, ga);
-            getLog().info("  [#####] Created.");
-        } else {
-            throw new ClassDefineException("Class <" + trait.getName() + "> bad defined");
-        }
+        trait.create(namespace, ga);
     }
 
-    private void generateClass(ClassDefine clazz, CodeProvider driver, ClassesDefine structs, GenerateArgs ga) {
-        val namespace = structs.getPackageName();
-        val defaults = structs.getDefaults();
-
-        getLog().info("- Prepare class "+clazz.getName()+" ...");
+    private void generateClass(ClassModel clazz, String namespace, GenerateArgs ga, FieldDefault defaults) throws MojoExecutionException {
         val classFullName = namespace+"."+clazz.getName();
         if (! classLogbook.add(classFullName)) {
-            throw new ClassDefineException("Class <" + classFullName + "> duplicated");
+            throw new MojoExecutionException("Class <" + classFullName + "> duplicated");
         }
 
-        clazz.checkForVoid();
-
-        boolean checkSuccesful = clazz.noBadName();
-        checkSuccesful &= clazz.checkLength();
-        checkSuccesful &= clazz.noDuplicateName(Tools::testCollision);
-        checkSuccesful &= clazz.noHole();
-        checkSuccesful &= clazz.noOverlap();
-        if (checkSuccesful) {
-            getLog().info("  [#####o] Creating ...");
-            driver.createClass(namespace, clazz, ga, defaults);
-            getLog().info("  [######] Created.");
-        } else {
-            throw new ClassDefineException("Class <" + clazz.getName() + "> bad defined");
-        }
+        clazz.create(namespace, ga, defaults);
     }
 
     private CodeProvider getCodeProvider() {
