@@ -10,8 +10,13 @@ import java.util.List;
 
 @Data
 public class MasterBook {
-    private String packageName;
     private FieldDefault defaults = new FieldDefault();
-    private List<TraitModel> interfaces = new ArrayList<>();
-    private List<ClassModel> classes = new ArrayList<>();
+    private List<ClassPackage> packages = new ArrayList<>();
+
+    @Data
+    public static class ClassPackage {
+        private String name;
+        private List<TraitModel> interfaces = new ArrayList<>();
+        private List<ClassModel> classes = new ArrayList<>();
+    }
 }

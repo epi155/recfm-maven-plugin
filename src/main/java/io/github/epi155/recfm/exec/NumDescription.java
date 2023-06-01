@@ -12,11 +12,12 @@ public class NumDescription extends TypeDescription {
         this.factory = factory;
         substituteProperty("at", int.class, null, "setOffset");
         substituteProperty("len", int.class, null, "setLength");
-        substituteProperty("red", boolean.class, null, "setRedefines");
+        substituteProperty("ovr", boolean.class, null, "setOverride");
         substituteProperty("ovf", OverflowAction.class, null, "setOnOverflow");
         substituteProperty("unf", UnderflowAction.class, null, "setOnUnderflow");
-        substituteProperty("num", boolean.class, null, "setNumericAccess");
-        substituteProperty("norm", NormalizeNumMode.class, null, "setNormalize");
+        substituteProperty("nrm", NormalizeNumMode.class, null, "setNormalize");
+        substituteProperty("acc", AccesMode.class, null, "setAccess");
+        substituteProperty("wid", WordWidth.class, null, "setWordWidth");
     }
     public Object newInstance(Node node) {
         return factory.newNumModel();

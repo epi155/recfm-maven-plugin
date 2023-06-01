@@ -14,7 +14,7 @@ public class OccTraitDescription extends TypeDescription {
         this.factory = factory;
         substituteProperty("at", int.class, null, "setOffset");
         substituteProperty("len", int.class, null, "setLength");
-        substituteProperty("red", boolean.class, null, "setRedefines");
+        substituteProperty("ovr", boolean.class, null, "setOverride");
         substituteProperty("as", TraitModel.class, null, "setTypedef");
         substituteProperty("x", int.class, null, "setTimes");
     }

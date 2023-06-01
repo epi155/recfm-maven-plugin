@@ -13,7 +13,7 @@ public class GrpDescription extends TypeDescription {
         this.factory = factory;
         substituteProperty("at", int.class, null, "setOffset");
         substituteProperty("len", int.class, null, "setLength");
-        substituteProperty("red", boolean.class, null, "setRedefines");
+        substituteProperty("ovr", boolean.class, null, "setOverride");
     }
     public Object newInstance(Node node) {
         return factory.newGrpModel();

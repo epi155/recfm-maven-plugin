@@ -52,17 +52,8 @@ public class RecordFormatMojo extends AbstractMojo {
     @Parameter(defaultValue = "${project.build.resources[0].directory}",
         property = "maven.recfm.settingsDirectory", required = true)
     private String settingsDirectory;
-
-    @Parameter(defaultValue = "4", property = "maven.recfm.align", required = true)
-    private int align;
-
     @Parameter(defaultValue = "true", property = "maven.recfm.doc", required = true)
     private boolean doc;
-    @Parameter(defaultValue = "true", property = "maven.recfm.enforceGetter", required = true)
-    private boolean enforceGetter;
-    @Parameter(defaultValue = "true", property = "maven.recfm.enforceSetter", required = true)
-    private boolean enforceSetter;
-
     @Parameter(defaultValue = "false", property = "maven.recfm.preprocessor", required = true)
     private boolean preprocessor;
 
@@ -114,16 +105,21 @@ public class RecordFormatMojo extends AbstractMojo {
         c0.addTypeDescription(new GrpTraitDescription(factory));
         c0.addTypeDescription(new OccTraitDescription(factory));
 
+        c0.addTypeDescription(new AbcDfltDescription());
+        c0.addTypeDescription(new NumDfltDescription());
+        c0.addTypeDescription(new CusDfltDescription());
+        c0.addTypeDescription(new NuxDfltDescription());
+        c0.addTypeDescription(new FilDfltDescription());
+
         c0.addTypeDescription(new InitNuxModeDescription());
+        c0.addTypeDescription(new AccesModeDescription());
+        c0.addTypeDescription(new WordWidthDescription());
 
         Yaml yaml = new Yaml(c0);
 
         val args = GenerateArgs.builder()
             .sourceDirectory(generateDirectory)
-            .align(align)
             .doc(doc)
-            .checkSetter(enforceSetter)
-            .checkGetter(enforceGetter)
             .group(plugin.getGroupId())
             .artifact(plugin.getArtifactId())
             .version(plugin.getVersion())
@@ -142,15 +138,18 @@ public class RecordFormatMojo extends AbstractMojo {
                     configFile = preprocess(configFile);
                 }
                 try (InputStream inputStream = Files.newInputStream(configFile.toPath())) {
-                    MasterBook structs = yaml.load(inputStream);
+                    MasterBook book = yaml.load(inputStream);
 
-                    String namespace = structs.getPackageName();
-                    makeDirectory(args.sourceDirectory, namespace);
-                    for(val it: structs.getInterfaces()) {
-                        generateTrait(it, namespace, args);
-                    }
-                    for(val it: structs.getClasses()) {
-                        generateClass(it, namespace, args, structs.getDefaults());
+                    FieldDefault defaults = book.getDefaults();
+                    for( val packg: book.getPackages()) {
+                        String namespace = packg.getName();
+                        makeDirectory(args.sourceDirectory, namespace);
+                        for(val it: packg.getInterfaces()) {
+                            generateTrait(it, namespace, args, defaults);
+                        }
+                        for(val it: packg.getClasses()) {
+                            generateClass(it, namespace, args, defaults);
+                        }
                     }
                 }
             } catch (MojoExecutionException e) {
@@ -221,13 +220,13 @@ public class RecordFormatMojo extends AbstractMojo {
         }
     }
 
-    private void generateTrait(TraitModel trait, String namespace, GenerateArgs ga) throws MojoExecutionException {
+    private void generateTrait(TraitModel trait, String namespace, GenerateArgs ga, FieldDefault defaults) throws MojoExecutionException {
         val classFullName = namespace+"."+trait.getName();
         if (! classLogbook.add(classFullName)) {
             throw new MojoExecutionException("Class <" + classFullName + "> duplicated");
         }
 
-        trait.create(namespace, ga);
+        trait.create(namespace, ga, defaults);
     }
 
     private void generateClass(ClassModel clazz, String namespace, GenerateArgs ga, FieldDefault defaults) throws MojoExecutionException {

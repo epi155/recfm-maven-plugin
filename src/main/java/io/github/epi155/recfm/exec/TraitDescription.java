@@ -11,7 +11,6 @@ public class TraitDescription extends TypeDescription {
     public TraitDescription(CodeFactory factory) {
         super(TraitModel.class);
         this.factory = factory;
-        substituteProperty("at", int.class, null, "setOffset");
         substituteProperty("len", int.class, null, "setLength");
     }
     public Object newInstance(Node node) {

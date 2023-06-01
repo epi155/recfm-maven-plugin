@@ -14,10 +14,10 @@ public class AbcDescription extends TypeDescription {
         substituteProperty("len", int.class, null, "setLength");
         substituteProperty("pad", Character.class, null, "setPadChar");
         substituteProperty("chk", CheckChar.class, null, "setCheck");
-        substituteProperty("red", boolean.class, null, "setRedefines");
+        substituteProperty("ovr", boolean.class, null, "setOverride");
         substituteProperty("ovf", OverflowAction.class, null, "setOnOverflow");
         substituteProperty("unf", UnderflowAction.class, null, "setOnUnderflow");
-        substituteProperty("norm", NormalizeAbcMode.class, null, "setNormalize");
+        substituteProperty("nrm", NormalizeAbcMode.class, null, "setNormalize");
         substituteProperty("get", Boolean.class, null, "setCheckGetter");
         substituteProperty("set", Boolean.class, null, "setCheckSetter");
     }
