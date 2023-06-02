@@ -105,6 +105,7 @@ public class RecordFormatMojo extends AbstractMojo {
         c0.addTypeDescription(new GrpTraitDescription(factory));
         c0.addTypeDescription(new OccTraitDescription(factory));
 
+        c0.addTypeDescription(new ClsDfltDescription());
         c0.addTypeDescription(new AbcDfltDescription());
         c0.addTypeDescription(new NumDfltDescription());
         c0.addTypeDescription(new CusDfltDescription());

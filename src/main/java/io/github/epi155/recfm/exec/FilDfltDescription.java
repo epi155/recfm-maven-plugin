@@ -7,6 +7,5 @@ public class FilDfltDescription extends TypeDescription {
     public FilDfltDescription() {
         super(FieldDefault.FilDefault.class);
         substituteProperty("fill", char.class, null, "setFill");
-        substituteProperty("chk", CheckChar.class, null, "setCheck");
     }
 }
