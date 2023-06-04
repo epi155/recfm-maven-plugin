@@ -6,6 +6,8 @@ import org.yaml.snakeyaml.TypeDescription;
 public class CusDfltDescription extends TypeDescription {
     public CusDfltDescription() {
         super(FieldDefault.CusDefault.class);
+        substituteProperty("pad", char.class, null, "setPadChar");
+        substituteProperty("ini", char.class, null, "setInitChar");
         substituteProperty("chk", CheckUser.class, null, "setCheck");
         substituteProperty("ovf", OverflowAction.class, null, "setOnOverflow");
         substituteProperty("unf", UnderflowAction.class, null, "setOnUnderflow");

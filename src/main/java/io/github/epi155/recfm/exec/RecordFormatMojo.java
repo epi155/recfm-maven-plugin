@@ -52,8 +52,6 @@ public class RecordFormatMojo extends AbstractMojo {
     @Parameter(defaultValue = "${project.build.resources[0].directory}",
         property = "maven.recfm.settingsDirectory", required = true)
     private String settingsDirectory;
-    @Parameter(defaultValue = "true", property = "maven.recfm.doc", required = true)
-    private boolean doc;
     @Parameter(defaultValue = "false", property = "maven.recfm.preprocessor", required = true)
     private boolean preprocessor;
 
@@ -120,7 +118,6 @@ public class RecordFormatMojo extends AbstractMojo {
 
         val args = GenerateArgs.builder()
             .sourceDirectory(generateDirectory)
-            .doc(doc)
             .group(plugin.getGroupId())
             .artifact(plugin.getArtifactId())
             .version(plugin.getVersion())
