@@ -12,7 +12,7 @@ public class CusDescription extends TypeDescription {
         this.factory = factory;
         substituteProperty("at", int.class, null, "setOffset");
         substituteProperty("len", int.class, null, "setLength");
-        substituteProperty("chk", CheckUser.class, null, "setCheck");
+        substituteProperty("chk", CheckCus.class, null, "setCheck");
         substituteProperty("ini", Character.class, null, "setInitChar");
         substituteProperty("pad", Character.class, null, "setPadChar");
         substituteProperty("ovr", boolean.class, null, "setOverride");

@@ -8,7 +8,7 @@ public class AbcDfltDescription extends TypeDescription {
         super(FieldDefault.AbcDefault.class);
         substituteProperty("pad", char.class, null, "setPadChar");
         substituteProperty("ini", char.class, null, "setInitChar");
-        substituteProperty("chk", CheckChar.class, null, "setCheck");
+        substituteProperty("chk", CheckAbc.class, null, "setCheck");
         substituteProperty("ovf", OverflowAction.class, null, "setOnOverflow");
         substituteProperty("unf", UnderflowAction.class, null, "setOnUnderflow");
         substituteProperty("nrm", NormalizeAbcMode.class, null, "setNormalize");
