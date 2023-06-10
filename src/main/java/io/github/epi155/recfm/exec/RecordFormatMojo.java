@@ -19,6 +19,7 @@ import org.yaml.snakeyaml.constructor.Constructor;
 
 import java.io.*;
 import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.ServiceLoader;
 import java.util.Set;
@@ -47,7 +48,7 @@ public class RecordFormatMojo extends AbstractMojo {
     @Parameter(defaultValue = "${project.build.directory}/generated-sources/recfm",
         property = "maven.recfm.generateDirectory", required = true)
     @Getter
-    private File generateDirectory;
+    private String generateDirectory;
 
     @Parameter(defaultValue = "${project.build.resources[0].directory}",
         property = "maven.recfm.settingsDirectory", required = true)
@@ -123,6 +124,11 @@ public class RecordFormatMojo extends AbstractMojo {
             .version(plugin.getVersion())
             .build();
 
+        File srcMain = new File(generateDirectory);
+        if (! srcMain.isDirectory()) {
+            throw new MojoExecutionException("Invalid generate directory "+generateDirectory);
+        }
+
         getLog().info("Settings directory: " + settingsDirectory);
         for (String setting : settings) {
             getLog().info("Generate from " + setting);
@@ -141,7 +147,7 @@ public class RecordFormatMojo extends AbstractMojo {
                     FieldDefault defaults = book.getDefaults();
                     for( val packg: book.getPackages()) {
                         String namespace = packg.getName();
-                        makeDirectory(args.sourceDirectory, namespace);
+                        makeDirectory(srcMain, namespace);
                         for(val it: packg.getInterfaces()) {
                             generateTrait(it, namespace, args, defaults);
                         }
@@ -254,10 +260,10 @@ public class RecordFormatMojo extends AbstractMojo {
     }
     private void setupMavenPaths() {
         if (getAddCompileSourceRoot()) {
-            getProject().addCompileSourceRoot(getGenerateDirectory().getPath());
+            getProject().addCompileSourceRoot(generateDirectory);
         }
         if (getAddTestCompileSourceRoot()) {
-            getProject().addTestCompileSourceRoot(getGenerateDirectory().getPath());
+            getProject().addTestCompileSourceRoot(generateDirectory);
         }
     }
 
