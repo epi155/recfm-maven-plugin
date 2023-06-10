@@ -1,6 +1,5 @@
 package io.github.epi155.recfm.exec;
 
-import io.github.epi155.recfm.api.InitializeNuxMode;
 import io.github.epi155.recfm.api.WordWidth;
 import org.yaml.snakeyaml.TypeDescription;
 import org.yaml.snakeyaml.nodes.Node;
@@ -15,22 +14,22 @@ public class WordWidthDescription extends TypeDescription {
             ScalarNode sNode = (ScalarNode) node;
             String value = sNode.getValue();
             switch (value) {
-                case "W1":
+                case "Byte":
+                case "byte":
                 case "1":
-                case "8-bit":
-                    return WordWidth.W1;
-                case "W2":
+                    return WordWidth.Byte;
+                case "Short":
+                case "short":
                 case "2":
-                case "16-bit":
-                    return WordWidth.W2;
-                case "W4":
+                    return WordWidth.Short;
+                case "Int":
+                case "int":
                 case "4":
-                case "32-bit":
-                    return WordWidth.W4;
-                case "W8":
+                    return WordWidth.Int;
+                case "Long":
+                case "long":
                 case "8":
-                case "64-bit":
-                    return WordWidth.W8;
+                    return WordWidth.Long;
                 default:
                     return null;
             }
