@@ -19,7 +19,6 @@ import org.yaml.snakeyaml.constructor.Constructor;
 
 import java.io.*;
 import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.HashSet;
 import java.util.ServiceLoader;
 import java.util.Set;
@@ -48,11 +47,11 @@ public class RecordFormatMojo extends AbstractMojo {
     @Parameter(defaultValue = "${project.build.directory}/generated-sources/recfm",
         property = "maven.recfm.generateDirectory", required = true)
     @Getter
-    private String generateDirectory;
+    private File generateDirectory;
 
     @Parameter(defaultValue = "${project.build.resources[0].directory}",
         property = "maven.recfm.settingsDirectory", required = true)
-    private String settingsDirectory;
+    private File settingsDirectory;
     @Parameter(defaultValue = "false", property = "maven.recfm.preprocessor", required = true)
     private boolean preprocessor;
 
@@ -118,21 +117,16 @@ public class RecordFormatMojo extends AbstractMojo {
         Yaml yaml = new Yaml(c0);
 
         val args = GenerateArgs.builder()
-            .sourceDirectory(generateDirectory)
+            .sourceDirectory(generateDirectory.getPath())
             .group(plugin.getGroupId())
             .artifact(plugin.getArtifactId())
             .version(plugin.getVersion())
             .build();
 
-        File srcMain = new File(generateDirectory);
-        if (! srcMain.isDirectory()) {
-            throw new MojoExecutionException("Invalid generate directory "+generateDirectory);
-        }
-
         getLog().info("Settings directory: " + settingsDirectory);
         for (String setting : settings) {
             getLog().info("Generate from " + setting);
-            File configFile = new File(settingsDirectory + File.separator + setting);
+            File configFile = new File(settingsDirectory, setting);
             if (!configFile.exists()) {
                 getLog().warn("Setting " + setting + " does not exist, ignored.");
                 continue;
@@ -147,7 +141,7 @@ public class RecordFormatMojo extends AbstractMojo {
                     FieldDefault defaults = book.getDefaults();
                     for( val packg: book.getPackages()) {
                         String namespace = packg.getName();
-                        makeDirectory(srcMain, namespace);
+                        makeDirectory(generateDirectory, namespace);
                         for(val it: packg.getInterfaces()) {
                             generateTrait(it, namespace, args, defaults);
                         }
@@ -163,18 +157,18 @@ public class RecordFormatMojo extends AbstractMojo {
                 throw new MojoExecutionException("Failed to execute plugin", e);
             }
         }
-        setupMavenPaths();
+        setupMavenPaths(generateDirectory);
 
         getLog().info("Done.");
     }
 
     public void makeDirectory(@NotNull File base, @Nullable String packg) throws MojoExecutionException {
         if (!base.exists()) {
-            getLog().info("Base Directory <"+base.getName()+"> does not exist, creating");
+            getLog().info("Source Directory <"+base.getName()+"> does not exist, creating");
             if (!base.mkdirs())
-                throw new MojoExecutionException("Error creating Base Directory <" + base.getName() + ">");
+                throw new MojoExecutionException("Error creating Source Directory <" + base.getName() + ">");
         }
-        if (!base.isDirectory()) throw new MojoExecutionException("Base Directory <" + base.getName() + "> is not a Directory");
+        if (!base.isDirectory()) throw new MojoExecutionException("Source Directory <" + base.getName() + "> is not a Directory");
         if (packg == null) return;
         StringTokenizer st = new StringTokenizer(packg, ".");
         String cwd = base.getAbsolutePath();
@@ -209,7 +203,7 @@ public class RecordFormatMojo extends AbstractMojo {
                 if(matcher.matches()) {
                     String inside = matcher.group(1);
                     File insideConf = inside.startsWith(File.separator) ?
-                            new File(inside) : new File(settingsDirectory + File.separator + inside);
+                            new File(inside) : new File(settingsDirectory, inside);
                     if (insideConf.exists()) {
                         getLog().info("<< import "+inside);
                         append(bw, insideConf);
@@ -258,12 +252,12 @@ public class RecordFormatMojo extends AbstractMojo {
             throw new CodeDriverException(codeProviderClassName);
         }
     }
-    private void setupMavenPaths() {
+    private void setupMavenPaths(File srcMain) {
         if (getAddCompileSourceRoot()) {
-            getProject().addCompileSourceRoot(generateDirectory);
+            getProject().addCompileSourceRoot(srcMain.getPath());
         }
         if (getAddTestCompileSourceRoot()) {
-            getProject().addTestCompileSourceRoot(generateDirectory);
+            getProject().addTestCompileSourceRoot(srcMain.getPath());
         }
     }
 
