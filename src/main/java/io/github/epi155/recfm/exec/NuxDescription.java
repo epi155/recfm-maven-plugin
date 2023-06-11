@@ -10,7 +10,7 @@ public class NuxDescription extends TypeDescription {
     public NuxDescription(CodeFactory factory) {
         super(NuxModel.class, "!Nux");
         this.factory = factory;
-        substituteProperty("at", int.class, null, "setOffset");
+        substituteProperty("at", Integer.class, null, "setOffset");
         substituteProperty("len", int.class, null, "setLength");
         substituteProperty("ovr", boolean.class, null, "setOverride");
         substituteProperty("ovf", OverflowAction.class, null, "setOnOverflow");

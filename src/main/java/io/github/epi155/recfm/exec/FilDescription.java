@@ -11,7 +11,7 @@ public class FilDescription extends TypeDescription {
     public FilDescription(CodeFactory factory) {
         super(FilModel.class, "!Fil");
         this.factory = factory;
-        substituteProperty("at", int.class, null, "setOffset");
+        substituteProperty("at", Integer.class, null, "setOffset");
         substituteProperty("len", int.class, null, "setLength");
     }
     public Object newInstance(Node node) {

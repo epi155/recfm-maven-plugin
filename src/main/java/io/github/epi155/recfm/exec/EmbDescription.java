@@ -12,7 +12,7 @@ public class EmbDescription extends TypeDescription {
     public EmbDescription(CodeFactory factory) {
         super(EmbModel.class, "!Emb");
         this.factory = factory;
-        substituteProperty("at", int.class, null, "setOffset");
+        substituteProperty("at", Integer.class, null, "setOffset");
         substituteProperty("len", int.class, null, "setLength");
         substituteProperty("src", TraitModel.class, null, "setSource");
     }

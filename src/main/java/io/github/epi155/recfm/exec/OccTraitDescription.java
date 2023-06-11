@@ -12,7 +12,7 @@ public class OccTraitDescription extends TypeDescription {
     public OccTraitDescription(CodeFactory factory) {
         super(OccTraitModel.class, "!OCC");
         this.factory = factory;
-        substituteProperty("at", int.class, null, "setOffset");
+        substituteProperty("at", Integer.class, null, "setOffset");
         substituteProperty("len", int.class, null, "setLength");
         substituteProperty("ovr", boolean.class, null, "setOverride");
         substituteProperty("as", TraitModel.class, null, "setTypedef");

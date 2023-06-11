@@ -11,7 +11,7 @@ public class OccDescription extends TypeDescription {
     public OccDescription(CodeFactory factory) {
         super(OccModel.class, "!Occ");
         this.factory = factory;
-        substituteProperty("at", int.class, null, "setOffset");
+        substituteProperty("at", Integer.class, null, "setOffset");
         substituteProperty("len", int.class, null, "setLength");
         substituteProperty("ovr", boolean.class, null, "setOverride");
         substituteProperty("x", int.class, null, "setTimes");

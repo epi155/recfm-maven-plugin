@@ -11,7 +11,7 @@ public class ValDescription extends TypeDescription {
     public ValDescription(CodeFactory factory) {
         super(ValModel.class, "!Val");
         this.factory = factory;
-        substituteProperty("at", int.class, null, "setOffset");
+        substituteProperty("at", Integer.class, null, "setOffset");
         substituteProperty("len", int.class, null, "setLength");
         substituteProperty("val", String.class, null, "setValue");
     }

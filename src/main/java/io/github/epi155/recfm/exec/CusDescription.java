@@ -10,7 +10,7 @@ public class CusDescription extends TypeDescription {
     public CusDescription(CodeFactory factory) {
         super(CusModel.class, "!Cus");
         this.factory = factory;
-        substituteProperty("at", int.class, null, "setOffset");
+        substituteProperty("at", Integer.class, null, "setOffset");
         substituteProperty("len", int.class, null, "setLength");
         substituteProperty("chk", CheckCus.class, null, "setCheck");
         substituteProperty("ini", Character.class, null, "setInitChar");

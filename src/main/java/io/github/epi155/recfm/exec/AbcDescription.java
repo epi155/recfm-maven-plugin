@@ -10,7 +10,7 @@ public class AbcDescription extends TypeDescription {
     public AbcDescription(CodeFactory factory) {
         super(AbcModel.class, "!Abc");
         this.factory = factory;
-        substituteProperty("at", int.class, null, "setOffset");
+        substituteProperty("at", Integer.class, null, "setOffset");
         substituteProperty("len", int.class, null, "setLength");
         substituteProperty("pad", Character.class, null, "setPadChar");
         substituteProperty("chk", CheckAbc.class, null, "setCheck");

@@ -12,7 +12,7 @@ public class GrpTraitDescription extends TypeDescription {
     public GrpTraitDescription(CodeFactory factory) {
         super(GrpTraitModel.class, "!GRP");
         this.factory = factory;
-        substituteProperty("at", int.class, null, "setOffset");
+        substituteProperty("at", Integer.class, null, "setOffset");
         substituteProperty("len", int.class, null, "setLength");
         substituteProperty("ovr", boolean.class, null, "setOverride");
         substituteProperty("as", TraitModel.class, null, "setTypedef");
