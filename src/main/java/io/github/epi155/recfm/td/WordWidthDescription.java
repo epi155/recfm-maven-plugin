@@ -1,4 +1,4 @@
-package io.github.epi155.recfm.exec;
+package io.github.epi155.recfm.td;
 
 import io.github.epi155.recfm.api.WordWidth;
 import org.yaml.snakeyaml.TypeDescription;
