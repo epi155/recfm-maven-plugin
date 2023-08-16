@@ -24,6 +24,8 @@ import java.util.HashSet;
 import java.util.ServiceLoader;
 import java.util.Set;
 import java.util.StringTokenizer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -87,6 +89,7 @@ public class RecordFormatMojo extends AbstractMojo {
     public void execute() throws MojoExecutionException {
         val driver = getCodeProvider();
         val factory = driver.getInstance();
+        Logger.getLogger("org.yaml.snakeyaml.introspector").setLevel(Level.SEVERE);
 
         Constructor c0 = new Constructor(MasterBook.class, new LoaderOptions());
         c0.addTypeDescription(new ClassDescription(factory));
