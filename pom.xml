@@ -14,6 +14,7 @@
     <!-- mvn versions:display-dependency-updates ! check for new version -->
     <!-- mvn release:clean ! clean release file -->
     <!-- mvn release:prepare ! creare RELEASE and next SNAPSHOT -->
+    <!-- mvn -DupdateWorkingCopyVersions=false release:prepare ! creare RELEASE -->
     <!-- mvn versions:set -DnewVersion=x.y.z -->
     <!-- mvn release:update-versions -->
     <!-- mvn dependency:tree -->
