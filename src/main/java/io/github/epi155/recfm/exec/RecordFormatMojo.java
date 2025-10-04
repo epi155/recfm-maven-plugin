@@ -37,6 +37,7 @@ import java.util.regex.Pattern;
 public class RecordFormatMojo extends AbstractMojo {
     private static final Pattern pattern = Pattern.compile("^\\s*#!import\\s+(\\S+)\\s*$");
 //    private static final Pattern pattern = Pattern.compile("\\s*#!import\\s+\"([^\"]+)\"\\s*");
+    public static ThreadLocal<PluginContext> pluginContext = ThreadLocal.withInitial(PluginContext::new);
     /**
      * <p>
      * Generated code will be written under this directory.
@@ -191,7 +192,7 @@ public class RecordFormatMojo extends AbstractMojo {
     }
 
     private File preprocess(File configFile) throws IOException {
-        File tempConfig = File.createTempFile("tecfm-", ".yaml");
+        File tempConfig = File.createTempFile("recfm-", ".yaml");
         tempConfig.deleteOnExit();
         try (BufferedWriter bw = Files.newBufferedWriter(tempConfig.toPath())) {
             append(bw, configFile);
