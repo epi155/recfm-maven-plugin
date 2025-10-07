@@ -26,8 +26,6 @@ import java.util.Set;
 import java.util.StringTokenizer;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 @Mojo(name = "generate",
         defaultPhase = LifecyclePhase.GENERATE_SOURCES,
@@ -35,8 +33,6 @@ import java.util.regex.Pattern;
         requiresDependencyCollection = ResolutionScope.COMPILE
 )
 public class RecordFormatMojo extends AbstractMojo {
-    private static final Pattern pattern = Pattern.compile("^\\s*#!import\\s+(\\S+)\\s*$");
-//    private static final Pattern pattern = Pattern.compile("\\s*#!import\\s+\"([^\"]+)\"\\s*");
     public static ThreadLocal<PluginContext> pluginContext = ThreadLocal.withInitial(PluginContext::new);
     /**
      * <p>
@@ -56,8 +52,6 @@ public class RecordFormatMojo extends AbstractMojo {
     @Parameter(defaultValue = "${project.build.resources[0].directory}",
         property = "maven.recfm.settingsDirectory", required = true)
     private File settingsDirectory;
-    @Parameter(defaultValue = "false", property = "maven.recfm.preprocessor", required = true)
-    private boolean preprocessor;
 
     @SuppressWarnings("MismatchedReadAndWriteOfArray")
     @Parameter(required = true)
@@ -136,23 +130,18 @@ public class RecordFormatMojo extends AbstractMojo {
                 getLog().warn("Setting " + setting + " does not exist, ignored.");
                 continue;
             }
-            try {
-                if (preprocessor) {
-                    configFile = preprocess(configFile);
-                }
-                try (InputStream inputStream = Files.newInputStream(configFile.toPath())) {
-                    MasterBook book = yaml.load(inputStream);
+            try (InputStream inputStream = Files.newInputStream(configFile.toPath())) {
+                MasterBook book = yaml.load(inputStream);
 
-                    FieldDefault defaults = book.getDefaults();
-                    for( val packg: book.getPackages()) {
-                        String namespace = packg.getName();
-                        makeDirectory(generateDirectory, namespace);
-                        for(val it: packg.getInterfaces()) {
-                            generateTrait(it, namespace, args, defaults);
-                        }
-                        for(val it: packg.getClasses()) {
-                            generateClass(it, namespace, args, defaults);
-                        }
+                FieldDefault defaults = book.getDefaults();
+                for( val packg: book.getPackages()) {
+                    String namespace = packg.getName();
+                    makeDirectory(generateDirectory, namespace);
+                    for(val it: packg.getInterfaces()) {
+                        generateTrait(it, namespace, args, defaults);
+                    }
+                    for(val it: packg.getClasses()) {
+                        generateClass(it, namespace, args, defaults);
                     }
                 }
             } catch (MojoExecutionException e) {
@@ -189,38 +178,6 @@ public class RecordFormatMojo extends AbstractMojo {
         val f = new File(tmp);
         if ((!f.exists()) && (!f.mkdir()))
             throw new MojoExecutionException("Cannot create directory <" + tmp + ">");
-    }
-
-    private File preprocess(File configFile) throws IOException {
-        File tempConfig = File.createTempFile("recfm-", ".yaml");
-        tempConfig.deleteOnExit();
-        try (BufferedWriter bw = Files.newBufferedWriter(tempConfig.toPath())) {
-            append(bw, configFile);
-        }
-        return tempConfig;
-    }
-
-    private void append(BufferedWriter bw, File configFile) throws IOException {
-        try(BufferedReader br = Files.newBufferedReader(configFile.toPath())) {
-            String line;
-            while((line = br.readLine()) != null) {
-                Matcher matcher = pattern.matcher(line);
-                if(matcher.matches()) {
-                    String inside = matcher.group(1);
-                    File insideConf = inside.startsWith(File.separator) ?
-                            new File(inside) : new File(settingsDirectory, inside);
-                    if (insideConf.exists()) {
-                        getLog().info("<< import "+inside);
-                        append(bw, insideConf);
-                    } else {
-                        getLog().warn("Skip import "+insideConf.getAbsolutePath());
-                    }
-                } else {
-                    bw.write(line);
-                    bw.newLine();
-                }
-            }
-        }
     }
 
     private void generateTrait(TraitModel trait, String namespace, GenerateArgs ga, FieldDefault defaults) throws MojoExecutionException {

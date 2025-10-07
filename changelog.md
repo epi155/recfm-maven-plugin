@@ -1,5 +1,12 @@
-# 0.7.1
+# Change Log
 
-Dependency Updates
+## [0.7.1]
 
-* CVE-2023-6378 ch.qos.logback:logback-classic ...................... 1.3.11 -> 1.3.14 
+### Added
+- The `reference` (`ref`) property has been added to the `Emb` type to indicate an interface by name, as an alternative to `source` (`src`)
+- The `reference` (`ref`) property has been added to the `GRP` type to indicate an interface by name, as an alternative to `typedef` (`as`)
+- The `reference` (`ref`) property has been added to the `OCC` type to indicate an interface by name, as an alternative to `typedef` (`as`)
+
+Interfaces can be defined in a different (previous) file than the one that references them.
+
+## [0.7.0] - 2023-09-01 - baseline version
