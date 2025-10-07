@@ -5,10 +5,12 @@
 |offset   | at  | int       |   | itself  |
 |length   | len | int       | X |         |
 |source   | src | interface | X |         |
-|reference| ref | string    | X |         |
+|reference| ref | String    | X |         |
 
 The `source` and `reference` attributes are alternatives.
+
 The `source` attribute requires the interface anchor, which must be defined in the same configuration file.
+
 The `reference` attribute requires the interface name, which can be defined in another configuration file.
 
 ~~~yaml
