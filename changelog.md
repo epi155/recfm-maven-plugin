@@ -1,5 +1,10 @@
-# 0.7.1
+# Change Log
 
-Dependency Updates
+## [0.7.1]
 
-* CVE-2023-6378 ch.qos.logback:logback-classic ...................... 1.3.11 -> 1.3.14 
+### Added
+- The `reference` (`ref`) property has been added to the [`Emb`](./doc/Emb-0.7.1.md) type
+- The `reference` (`ref`) property has been added to the [`GRP`](./doc/GRP-0.7.1.md) type
+- The `reference` (`ref`) property has been added to the [`OCC`](./doc/OCC-0.7.1.md) type
+
+## [0.7.0] - 2023-09-01 - baseline version
