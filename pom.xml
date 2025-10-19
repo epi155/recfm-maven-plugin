@@ -110,11 +110,42 @@
             <version>26.0.2-1</version>
             <scope>compile</scope>
         </dependency>
+<!--        <dependency>-->
+<!--            <groupId>org.aspectj</groupId>-->
+<!--            <artifactId>aspectjrt</artifactId>-->
+<!--            <version>${aspectj.version}</version>-->
+<!--        </dependency>-->
+
+        <!-- Dipendenza per i test del plugin -->
         <dependency>
-            <groupId>org.aspectj</groupId>
-            <artifactId>aspectjrt</artifactId>
-            <version>${aspectj.version}</version>
+            <groupId>org.apache.maven.plugin-testing</groupId>
+            <artifactId>maven-plugin-testing-harness</artifactId>
+            <version>3.3.0</version>
+            <scope>test</scope>
         </dependency>
+
+        <!-- JUnit 5 -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+            <version>5.10.0</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.github.epi155</groupId>
+            <artifactId>recfm-java-addon</artifactId>
+            <version>0.7.3</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.github.epi155</groupId>
+            <artifactId>recfm-java-lib</artifactId>
+            <version>0.7.3</version>
+            <scope>test</scope>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -203,43 +234,43 @@
                 </executions>
             </plugin>
 
-            <plugin>
+<!--            <plugin>-->
                 <!-- org.codehaus.mojo problemi con java 11, 17, 21 e maven-4 -->
-                <groupId>dev.aspectj</groupId>
-                <artifactId>aspectj-maven-plugin</artifactId>
-                <version>1.14.1</version>
-                <configuration>
-                    <forceAjcCompile>true</forceAjcCompile>
-                    <weaveDirectories>
-                        <weaveDirectory>${project.build.outputDirectory}</weaveDirectory>
-                    </weaveDirectories>
-                    <weaveDependencies>
-                        <weaveDependency>
-                            <groupId>io.github.epi155</groupId>
-                            <artifactId>recfm-addon-api</artifactId>
-                        </weaveDependency>
-                    </weaveDependencies>
-                    <!-- livello di compatibilità Java -->
-                    <complianceLevel>${maven.compiler.source}</complianceLevel>
-                    <source>${maven.compiler.source}</source>
-                    <target>${maven.compiler.target}</target>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>copy-only-aspect-files</id>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>compile</goal>
-                        </goals>
-                        <configuration>
-                            <Xlint>ignore</Xlint>
-                            <includes>
-                                <include>**/*.aj</include>
-                            </includes>
-                        </configuration>
-                    </execution>
-                </executions>
-            </plugin>
+<!--                <groupId>dev.aspectj</groupId>-->
+<!--                <artifactId>aspectj-maven-plugin</artifactId>-->
+<!--                <version>1.14.1</version>-->
+<!--                <configuration>-->
+<!--                    <forceAjcCompile>true</forceAjcCompile>-->
+<!--                    <weaveDirectories>-->
+<!--                        <weaveDirectory>${project.build.outputDirectory}</weaveDirectory>-->
+<!--                    </weaveDirectories>-->
+<!--                    <weaveDependencies>-->
+<!--                        <weaveDependency>-->
+<!--                            <groupId>io.github.epi155</groupId>-->
+<!--                            <artifactId>recfm-addon-api</artifactId>-->
+<!--                        </weaveDependency>-->
+<!--                    </weaveDependencies>-->
+<!--                    &lt;!&ndash; livello di compatibilità Java &ndash;&gt;-->
+<!--                    <complianceLevel>${maven.compiler.source}</complianceLevel>-->
+<!--                    <source>${maven.compiler.source}</source>-->
+<!--                    <target>${maven.compiler.target}</target>-->
+<!--                </configuration>-->
+<!--                <executions>-->
+<!--                    <execution>-->
+<!--                        <id>copy-only-aspect-files</id>-->
+<!--                        <phase>compile</phase>-->
+<!--                        <goals>-->
+<!--                            <goal>compile</goal>-->
+<!--                        </goals>-->
+<!--                        <configuration>-->
+<!--                            <Xlint>ignore</Xlint>-->
+<!--                            <includes>-->
+<!--                                <include>**/*.aj</include>-->
+<!--                            </includes>-->
+<!--                        </configuration>-->
+<!--                    </execution>-->
+<!--                </executions>-->
+<!--            </plugin>-->
 
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>

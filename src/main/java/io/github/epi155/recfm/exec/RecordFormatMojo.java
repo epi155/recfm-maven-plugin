@@ -2,6 +2,7 @@ package io.github.epi155.recfm.exec;
 
 
 import io.github.epi155.recfm.api.*;
+import io.github.epi155.recfm.ctor.RFConstructor;
 import io.github.epi155.recfm.td.*;
 import lombok.Getter;
 import lombok.val;
@@ -86,21 +87,22 @@ public class RecordFormatMojo extends AbstractMojo {
         val factory = driver.getInstance();
         Logger.getLogger("org.yaml.snakeyaml.introspector").setLevel(Level.SEVERE);
 
-        Constructor c0 = new Constructor(MasterBook.class, new LoaderOptions());
+        Constructor c0 = new RFConstructor(MasterBook.class, new LoaderOptions(), factory);
+//        Constructor c0 = new Constructor(MasterBook.class, new LoaderOptions());
         c0.addTypeDescription(new ClassDescription(factory));
         c0.addTypeDescription(new TraitDescription(factory));
-        c0.addTypeDescription(new AbcDescription(factory));
-        c0.addTypeDescription(new NumDescription(factory));
+//        c0.addTypeDescription(new AbcDescription(factory));
+//        c0.addTypeDescription(new NumDescription(factory));
         c0.addTypeDescription(new NuxDescription(factory));
         c0.addTypeDescription(new CusDescription(factory));
         c0.addTypeDescription(new DomDescription(factory));
-        c0.addTypeDescription(new FilDescription(factory));
-        c0.addTypeDescription(new ValDescription(factory));
-        c0.addTypeDescription(new EmbDescription(factory));
-        c0.addTypeDescription(new GrpDescription(factory));
-        c0.addTypeDescription(new OccDescription(factory));
-        c0.addTypeDescription(new GrpTraitDescription(factory));
-        c0.addTypeDescription(new OccTraitDescription(factory));
+//        c0.addTypeDescription(new FilDescription(factory));
+//        c0.addTypeDescription(new ValDescription(factory));
+//        c0.addTypeDescription(new EmbDescription(factory));
+//        c0.addTypeDescription(new GrpDescription(factory));
+//        c0.addTypeDescription(new OccDescription(factory));
+//        c0.addTypeDescription(new GrpTraitDescription(factory));
+//        c0.addTypeDescription(new OccTraitDescription(factory));
 
         c0.addTypeDescription(new ClsDfltDescription());
         c0.addTypeDescription(new AbcDfltDescription());
@@ -110,8 +112,8 @@ public class RecordFormatMojo extends AbstractMojo {
         c0.addTypeDescription(new FilDfltDescription());
 
         c0.addTypeDescription(new InitNuxModeDescription());
-        c0.addTypeDescription(new AccesModeDescription());
-        c0.addTypeDescription(new WordWidthDescription());
+        c0.addTypeDescription(new AccesModeDescription());  // Num, Nux
+        c0.addTypeDescription(new WordWidthDescription());  // Num, Nux
 
         Yaml yaml = new Yaml(c0);
 

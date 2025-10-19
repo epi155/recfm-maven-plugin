@@ -1,0 +1,12 @@
+packages:
+  - name: com.example.test.abc
+    classes:
+      - name: Abc01
+        length: 50
+        fields:
+          - !Abc [ alpha01,  10 ]
+#          - !Abc { name: alpha01   , at:  1, len: 10  }
+          - !Abc { name: alpha02   , at: 11, len: 10, check: Ascii  }
+          - !Abc { name: alpha03   , at: 21, len: 10, check: Latin1 }
+          - !Abc { name: alpha04   , at: 31, len: 10, check: Valid }
+          - !Abc { name: alpha05   , at: 41, len: 10, check: None }
