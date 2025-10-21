@@ -4,9 +4,20 @@ packages:
       - name: Abc01
         length: 50
         fields:
-          - !Abc [ alpha01,  10 ]
-#          - !Abc { name: alpha01   , at:  1, len: 10  }
+          - !Abc { name: alpha01   , at:  1, len: 10  }
           - !Abc { name: alpha02   , at: 11, len: 10, check: Ascii  }
           - !Abc { name: alpha03   , at: 21, len: 10, check: Latin1 }
           - !Abc { name: alpha04   , at: 31, len: 10, check: Valid }
           - !Abc { name: alpha05   , at: 41, len: 10, check: None }
+
+      - name: Abc02
+        fields:
+          - !Abc [ alpha01   , 10  ]
+          - !Abc [ alpha02   , 10, Ascii  ]
+          - !Abc [ alpha03   , 10, Latin1 ]
+          - !Abc [ alpha04   , 10, Valid ]
+          - !Abc [ alpha05   , 10, None ]
+
+      - name: Currency
+        fields:
+          - !Dom [ symbol, [ EUR, USD, CHF, JPY, GBP, HKD, RUB, CNH ] ]

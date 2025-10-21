@@ -27,6 +27,10 @@ Incremental constructor
 !Abc {   name, len,  ovr,  at,  chk,  nrm,  ovf,  unf,  get,  set }
 ~~~
 
+* `!Abc [ String, Int, Int ]` -> `!Abc { name, at, len }`
+* `!Abc [ String, Int, enum ]` -> `!Abc { name, len, chk }`
+* `!Abc [ String, Int, enum ]` -> `!Abc { name, len, nrm }`
+
 ### `Num`
 
 Incremental constructor
@@ -35,6 +39,10 @@ Incremental constructor
 !Num [ String, Int, Bool, Int, enum, enum, enum, enum, enum ]
 !Num {   name, len,  ovr,  at,  acc,  nrm,  ovf,  unf,  wid }
 ~~~
+
+* `!Num [ String, Int, Int ]` -> `!Num { name, at, len }`
+* `!Num [ String, Int, enum ]` -> `!Num { name, len, acc }`
+* `!Num [ String, Int, enum ]` -> `!Num { name, len, nrm }`
 
 ### `Fil`
 
@@ -45,6 +53,8 @@ Incremental constructor
 !Fil { len,  at, fill }
 ~~~
 
+* `!Fil [ Int, Int ]` -> `!Fil { at, len }
+
 ### `Val`
 
 Incremental constructor
@@ -54,23 +64,44 @@ Incremental constructor
 !Val {    val, len,  at }
 ~~~
 
+### `Dom`
+
+Incremental constructor
+
+~~~yaml
+!Dom [ String, Int,  List, Bool, Int ]
+!Dom {   name, len, items,  ovr,  at }
+~~~
+
+* `!Dom [ String, List ]` -> `!Dom { name, items }`
+
 ### `Grp`
 
 Incremental constructor
 
 ~~~yaml
-!Grp [ String, List, Int, Bool, Int ]
-!Grp {   name, flds, len,  ovr,  at }
+!Grp [ String, List, Bool, Int, Int ]
+!Grp {   name, flds,  ovr, len,  at }
 ~~~
+
+* `!Grp [ String, Int, List ]` -> `!Grp { name, len, flds }`
+* `!Grp [ String, Int, Int , List ]` -> `!Grp { name, at, len, flds }`
+* `!Grp [ String, Int, Bool , List ]` -> `!Grp { name, len, ovr, flds }`
+* `!Grp [ String, Int, Int, Bool , List ]` -> `!Grp { name, at, len, ovr, flds }`
 
 ### `Occ`
 
 Incremental constructor
 
 ~~~yaml
-!Occ [ String, Int, List, Int, Bool, Int ]
-!Occ {   name,   x, flds, len,  ovr,  at }
+!Occ [ String, Int, List, Bool, Int, Int ]
+!Occ {   name,   x, flds,  ovr, len,  at }
 ~~~
+
+* `!Occ [ String, Int, Int, List ]` -> `!Occ { name, len, x, flds }`
+* `!Occ [ String, Int, Int, Int, List ]` -> `!Occ { name, at, len, x, flds }`
+* `!Occ [ String, Int, Int, Bool, List ]` -> `!Occ { name, len, x, ovr, flds }`
+* `!Occ [ String, Int, Int, Int, Bool, List ]` -> `!Occ { name, at, len, x, ovr, flds }`
 
 ### `GRP`
 

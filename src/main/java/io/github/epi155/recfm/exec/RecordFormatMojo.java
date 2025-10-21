@@ -88,21 +88,12 @@ public class RecordFormatMojo extends AbstractMojo {
         Logger.getLogger("org.yaml.snakeyaml.introspector").setLevel(Level.SEVERE);
 
         Constructor c0 = new RFConstructor(MasterBook.class, new LoaderOptions(), factory);
-//        Constructor c0 = new Constructor(MasterBook.class, new LoaderOptions());
         c0.addTypeDescription(new ClassDescription(factory));
         c0.addTypeDescription(new TraitDescription(factory));
-//        c0.addTypeDescription(new AbcDescription(factory));
-//        c0.addTypeDescription(new NumDescription(factory));
+
         c0.addTypeDescription(new NuxDescription(factory));
         c0.addTypeDescription(new CusDescription(factory));
-        c0.addTypeDescription(new DomDescription(factory));
-//        c0.addTypeDescription(new FilDescription(factory));
-//        c0.addTypeDescription(new ValDescription(factory));
-//        c0.addTypeDescription(new EmbDescription(factory));
-//        c0.addTypeDescription(new GrpDescription(factory));
-//        c0.addTypeDescription(new OccDescription(factory));
-//        c0.addTypeDescription(new GrpTraitDescription(factory));
-//        c0.addTypeDescription(new OccTraitDescription(factory));
+//        c0.addTypeDescription(new DomDescription(factory));
 
         c0.addTypeDescription(new ClsDfltDescription());
         c0.addTypeDescription(new AbcDfltDescription());

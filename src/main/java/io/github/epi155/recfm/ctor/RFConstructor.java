@@ -33,6 +33,8 @@ public class RFConstructor extends Constructor {
         this.yamlConstructors.put(new org.yaml.snakeyaml.nodes.Tag("!Fil"), this.new ConstructFil());
         this.yamlConstructors.put(new org.yaml.snakeyaml.nodes.Tag("!Val"), this.new ConstructVal());
 
+        this.yamlConstructors.put(new org.yaml.snakeyaml.nodes.Tag("!Dom"), this.new ConstructDom());
+
         this.yamlConstructors.put(new org.yaml.snakeyaml.nodes.Tag("!Grp"), this.new ConstructGrp());
         this.yamlConstructors.put(new org.yaml.snakeyaml.nodes.Tag("!Occ"), this.new ConstructOcc());
 
@@ -276,15 +278,7 @@ public class RFConstructor extends Constructor {
                 boolean isFilled = false;
                 List<?> values = constructSequence((SequenceNode) node);
                 int argc = values.size();
-                if (argc == 2) {
-                    Object arg0 = values.get(0);
-                    Object arg1 = values.get(1);
-                    if (arg0 instanceof String && arg1 instanceof Integer) {
-                        target.setName((String) arg0);
-                        target.setLength((Integer) arg1);
-                        isFilled = true;
-                    }
-                } else if (argc == 3) {
+                if (argc == 3) {
                     Object arg0 = values.get(0);
                     Object arg1 = values.get(1);
                     Object arg2 = values.get(2);
@@ -292,11 +286,6 @@ public class RFConstructor extends Constructor {
                         target.setName((String) arg0);
                         target.setOffset((Integer) arg1);
                         target.setLength((Integer) arg2);
-                        isFilled = true;
-                    } else if (arg0 instanceof String && arg1 instanceof Integer && arg2 instanceof Boolean) {
-                        target.setName((String) arg0);
-                        target.setLength((Integer) arg1);
-                        target.setOverride((Boolean) arg2);
                         isFilled = true;
                     } else if (arg0 instanceof String && arg1 instanceof Integer &&
                             arg2 instanceof String && enumExists(NormalizeNumMode.class, (String) arg2)) {
@@ -426,24 +415,6 @@ public class RFConstructor extends Constructor {
                         target.setLength(s.length());
                         isFilled = true;
                     }
-                } else if (argc == 2) {
-                    Object arg0 = values.get(0);
-                    Object arg1 = values.get(1);
-                    if (arg0 instanceof String && arg1 instanceof Integer) {
-                        target.setValue((String) arg0);
-                        target.setLength((Integer) arg1);
-                        isFilled = true;
-                    }
-                } else if (argc == 3) {
-                    Object arg0 = values.get(0);
-                    Object arg1 = values.get(1);
-                    Object arg2 = values.get(2);
-                    if (arg0 instanceof String && arg1 instanceof Integer && arg2 instanceof Integer) {
-                        target.setValue((String) arg0);
-                        target.setOffset((Integer) arg1);
-                        target.setLength((Integer) arg2);
-                        isFilled = true;
-                    }
                 }
                 if (!isFilled) {
                     if (argc > 0) safeSet(values, 0, String.class, target::setValue);
@@ -489,16 +460,7 @@ public class RFConstructor extends Constructor {
                 boolean isFilled = false;
                 List<?> values = constructSequence((SequenceNode) node);
                 int argc = values.size();
-                if (argc == 2) {
-                    Object arg0 = values.get(0);
-                    Object arg1 = values.get(1);
-                    if (arg0 instanceof String && arg1 instanceof List) {
-                        target.setName((String) arg0);
-                        //noinspection unchecked
-                        target.setFields((List<FieldModel>) arg1);
-                        isFilled = true;
-                    }
-                } else if (argc == 3) {
+                if (argc == 3) {
                     Object arg0 = values.get(0);
                     Object arg1 = values.get(1);
                     Object arg2 = values.get(2);
@@ -531,12 +493,29 @@ public class RFConstructor extends Constructor {
                         target.setFields((List<FieldModel>) arg3);
                         isFilled = true;
                     }
+                } else if (argc == 5) {
+                    Object arg0 = values.get(0);
+                    Object arg1 = values.get(1);
+                    Object arg2 = values.get(2);
+                    Object arg3 = values.get(3);
+                    Object arg4 = values.get(4);
+                    if (arg0 instanceof String && arg1 instanceof Integer
+                            && arg2 instanceof Integer && arg3 instanceof Boolean
+                            && arg4 instanceof List) {
+                        target.setName((String) arg0);
+                        target.setOffset((Integer) arg1);
+                        target.setLength((Integer) arg2);
+                        target.setOverride((Boolean) arg3);
+                        //noinspection unchecked
+                        target.setFields((List<FieldModel>) arg4);
+                        isFilled = true;
+                    }
                 }
                 if (!isFilled) {
                     if (argc > 0) safeSet(values, 0, String.class, target::setName);
                     if (argc > 1) safeSet(values, 1, List.class, target::setFields);
-                    if (argc > 2) safeSet(values, 2, Integer.class, target::setLength);
-                    if (argc > 3) safeSet(values, 3, Boolean.class, target::setOverride);
+                    if (argc > 2) safeSet(values, 2, Boolean.class, target::setOverride);
+                    if (argc > 3) safeSet(values, 3, Integer.class, target::setLength);
                     if (argc > 4) safeSet(values, 4, Integer.class, target::setOffset);
                 }
             }
@@ -585,18 +564,7 @@ public class RFConstructor extends Constructor {
                 boolean isFilled = false;
                 List<?> values = constructSequence((SequenceNode) node);
                 int argc = values.size();
-                if (argc == 3) {
-                    Object arg0 = values.get(0);
-                    Object arg1 = values.get(1);
-                    Object arg2 = values.get(2);
-                    if (arg0 instanceof String && arg1 instanceof Integer && arg2 instanceof List) {
-                        target.setName((String) arg0);
-                        target.setTimes((Integer) arg1);
-                        //noinspection unchecked
-                        target.setFields((List<FieldModel>) arg2);
-                        isFilled = true;
-                    }
-                } else if (argc == 4) {
+                if (argc == 4) {
                     Object arg0 = values.get(0);
                     Object arg1 = values.get(1);
                     Object arg2 = values.get(2);
@@ -609,13 +577,51 @@ public class RFConstructor extends Constructor {
                         //noinspection unchecked
                         target.setFields((List<FieldModel>) arg3);
                         isFilled = true;
-                    } else if (arg0 instanceof String && arg1 instanceof Integer
-                            && arg2 instanceof Boolean && arg3 instanceof List) {
+                    }
+                } else if (argc == 5) {
+                    Object arg0 = values.get(0);
+                    Object arg1 = values.get(1);
+                    Object arg2 = values.get(2);
+                    Object arg3 = values.get(3);
+                    Object arg4 = values.get(4);
+                    if (arg0 instanceof String && arg1 instanceof Integer
+                            && arg2 instanceof Integer && arg3 instanceof Integer
+                            && arg4 instanceof List) {
                         target.setName((String) arg0);
-                        target.setTimes((Integer) arg1);
-                        target.setOverride((Boolean) arg2);
+                        target.setOffset((Integer) arg1);
+                        target.setLength((Integer) arg2);
+                        target.setTimes((Integer) arg3);
                         //noinspection unchecked
-                        target.setFields((List<FieldModel>) arg3);
+                        target.setFields((List<FieldModel>) arg4);
+                        isFilled = true;
+                    } else if (arg0 instanceof String && arg1 instanceof Integer
+                            && arg2 instanceof Integer && arg3 instanceof Boolean
+                            && arg4 instanceof List) {
+                        target.setName((String) arg0);
+                        target.setLength((Integer) arg1);
+                        target.setTimes((Integer) arg2);
+                        target.setOverride((Boolean) arg3);
+                        //noinspection unchecked
+                        target.setFields((List<FieldModel>) arg4);
+                        isFilled = true;
+                    }
+                } else if (argc == 6) {
+                    Object arg0 = values.get(0);
+                    Object arg1 = values.get(1);
+                    Object arg2 = values.get(2);
+                    Object arg3 = values.get(3);
+                    Object arg4 = values.get(4);
+                    Object arg5 = values.get(5);
+                    if (arg0 instanceof String && arg1 instanceof Integer
+                            && arg2 instanceof Integer && arg3 instanceof Integer
+                            && arg4 instanceof Boolean && arg5 instanceof List) {
+                        target.setName((String) arg0);
+                        target.setOffset((Integer) arg1);
+                        target.setLength((Integer) arg2);
+                        target.setTimes((Integer) arg3);
+                        target.setOverride((Boolean) arg4);
+                        //noinspection unchecked
+                        target.setFields((List<FieldModel>) arg5);
                         isFilled = true;
                     }
                 }
@@ -623,8 +629,8 @@ public class RFConstructor extends Constructor {
                     if (argc > 0) safeSet(values, 0, String.class, target::setName);
                     if (argc > 1) safeSet(values, 1, Integer.class, target::setTimes);
                     if (argc > 2) safeSet(values, 2, List.class, target::setFields);
-                    if (argc > 3) safeSet(values, 3, Integer.class, target::setLength);
-                    if (argc > 4) safeSet(values, 4, Boolean.class, target::setOverride);
+                    if (argc > 3) safeSet(values, 3, Boolean.class, target::setOverride);
+                    if (argc > 4) safeSet(values, 4, Integer.class, target::setLength);
                     if (argc > 5) safeSet(values, 5, Integer.class, target::setOffset);
                 }
             }
@@ -869,6 +875,71 @@ public class RFConstructor extends Constructor {
         }
         private <R> void safeSet(List<?> values, int i, Consumer<R> setter, Function<String,R> map) {
             RFConstructor.this.safeSet("!Emb", values, i, String.class, setter, map);
+        }
+    }
+
+    private class ConstructDom implements Construct {
+        @SuppressWarnings("unchecked")
+        @Override
+        public Object construct(Node node) {
+            DomModel target = factory.newDomModel();
+
+            if (node instanceof MappingNode) {
+                Map<Object, Object> values = constructMapping((MappingNode) node);
+                if (values.containsKey("name")) safeSet(values, "name", String.class, target::setName);
+                if (values.containsKey("length")) safeSet(values, "length", Integer.class, target::setLength);
+                if (values.containsKey("offset")) safeSet(values, "offset", Integer.class, target::setOffset);
+                if (values.containsKey("items")) safeSet(values, "items", List.class, target::setItems, it -> (String[]) it.toArray(new String[0]));
+                if (values.containsKey("override")) safeSet(values, "override", Boolean.class, target::setOverride);
+
+                if (values.containsKey("at")) safeSet(values, "at", Integer.class, target::setOffset);
+                if (values.containsKey("len")) safeSet(values, "len", Integer.class, target::setLength);
+                if (values.containsKey("ovr")) safeSet(values, "ovr", Boolean.class, target::setOverride);
+
+            } else if (node instanceof SequenceNode) {
+                boolean isFilled = false;
+                List<?> values = constructSequence((SequenceNode) node);
+                int argc = values.size();
+                if (argc == 2) {
+                    Object arg0 = values.get(0);
+                    Object arg1 = values.get(1);
+                    if (arg0 instanceof String && arg1 instanceof List) {
+                        String name = (String) arg0;
+                        String[] items = ((List<?>) arg1).toArray(new String[0]);
+                        int len = 0;
+                        for(String item: items) if (item.length() > len) len = item.length();
+                        target.setName(name);
+                        target.setLength(len);
+                        target.setItems(items);
+                        isFilled = true;
+                    }
+                }
+                if (!isFilled) {
+                    if (argc > 0) safeSet(values, 0, String.class, target::setName);
+                    if (argc > 1) safeSet(values, 1, Integer.class, target::setLength);
+                    if (argc > 2) safeSet(values, 2, List.class, target::setItems, it -> (String[]) it.toArray(new String[0]));
+                    if (argc > 3) safeSet(values, 3, Boolean.class, target::setOverride);
+                    if (argc > 3) safeSet(values, 3, Integer.class, target::setOffset);
+                }
+            }
+            return target;
+        }
+
+        @Override
+        public void construct2ndStep(Node node, Object o) {
+            // non serve in questo caso
+        }
+        private <T> void safeSet(Map<Object, Object> values, String label, Class<T> type, Consumer<T> setter) {
+            RFConstructor.this.safeSet("!Dom", values, label, type, setter);
+        }
+        private <T,R> void safeSet(Map<Object, Object> values, String label, Class<T> type, Consumer<R> setter, Function<T,R> map) {
+            RFConstructor.this.safeSet("!Dom", values, label, type, setter, map);
+        }
+        private <T> void safeSet(List<?> values, int i, Class<T> type, Consumer<T> setter) {
+            RFConstructor.this.safeSet("!Dom", values, i, type, setter);
+        }
+        private <T,R> void safeSet(List<?> values, int i, Class<T> type, Consumer<R> setter, Function<T,R> map) {
+            RFConstructor.this.safeSet("!Dom", values, i, type, setter, map);
         }
     }
 }
