@@ -53,7 +53,7 @@ Incremental constructor
 !Fil { len,  at, fill }
 ~~~
 
-* `!Fil [ Int, Int ]` -> `!Fil { at, len }
+* `!Fil [ Int, Int ]` -> `!Fil { at, len }`
 
 ### `Val`
 
