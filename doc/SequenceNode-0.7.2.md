@@ -27,9 +27,9 @@ Incremental constructor
 !Abc {   name, len,  ovr,  at,  chk,  nrm,  ovf,  unf,  get,  set }
 ~~~
 
-* `!Abc [ String, Int, Int ]` -> `!Abc { name, at, len }`
-* `!Abc [ String, Int, enum ]` -> `!Abc { name, len, chk }`
-* `!Abc [ String, Int, enum ]` -> `!Abc { name, len, nrm }`
+* `!Abc [ String, Int, Int ]` &#8594; `!Abc { name, at, len }`
+* `!Abc [ String, Int, enum ]` &#8594; `!Abc { name, len, chk }`
+* `!Abc [ String, Int, enum ]` &#8594; `!Abc { name, len, nrm }`
 
 ### `Num`
 
@@ -40,9 +40,9 @@ Incremental constructor
 !Num {   name, len,  ovr,  at,  acc,  nrm,  ovf,  unf,  wid }
 ~~~
 
-* `!Num [ String, Int, Int ]` -> `!Num { name, at, len }`
-* `!Num [ String, Int, enum ]` -> `!Num { name, len, acc }`
-* `!Num [ String, Int, enum ]` -> `!Num { name, len, nrm }`
+* `!Num [ String, Int, Int ]` &#8594; `!Num { name, at, len }`
+* `!Num [ String, Int, enum ]` &#8594; `!Num { name, len, acc }`
+* `!Num [ String, Int, enum ]` &#8594; `!Num { name, len, nrm }`
 
 ### `Fil`
 
@@ -53,7 +53,7 @@ Incremental constructor
 !Fil { len,  at, fill }
 ~~~
 
-* `!Fil [ Int, Int ]` -> `!Fil { at, len }`
+* `!Fil [ Int, Int ]` &#8594; `!Fil { at, len }`
 
 ### `Val`
 
@@ -73,7 +73,7 @@ Incremental constructor
 !Dom {   name, len, items,  ovr,  at }
 ~~~
 
-* `!Dom [ String, List ]` -> `!Dom { name, items }`
+* `!Dom [ String, List ]` &#8594; `!Dom { name, items }`
 
 ### `Grp`
 
@@ -84,10 +84,10 @@ Incremental constructor
 !Grp {   name, flds,  ovr, len,  at }
 ~~~
 
-* `!Grp [ String, Int, List ]` -> `!Grp { name, len, flds }`
-* `!Grp [ String, Int, Int , List ]` -> `!Grp { name, at, len, flds }`
-* `!Grp [ String, Int, Bool , List ]` -> `!Grp { name, len, ovr, flds }`
-* `!Grp [ String, Int, Int, Bool , List ]` -> `!Grp { name, at, len, ovr, flds }`
+* `!Grp [ String, Int, List ]` &#8594; `!Grp { name, len, flds }`
+* `!Grp [ String, Int, Int , List ]` &#8594; `!Grp { name, at, len, flds }`
+* `!Grp [ String, Int, Bool , List ]` &#8594; `!Grp { name, len, ovr, flds }`
+* `!Grp [ String, Int, Int, Bool , List ]` &#8594; `!Grp { name, at, len, ovr, flds }`
 
 ### `Occ`
 
@@ -98,10 +98,10 @@ Incremental constructor
 !Occ {   name,   x, flds,  ovr, len,  at }
 ~~~
 
-* `!Occ [ String, Int, Int, List ]` -> `!Occ { name, len, x, flds }`
-* `!Occ [ String, Int, Int, Int, List ]` -> `!Occ { name, at, len, x, flds }`
-* `!Occ [ String, Int, Int, Bool, List ]` -> `!Occ { name, len, x, ovr, flds }`
-* `!Occ [ String, Int, Int, Int, Bool, List ]` -> `!Occ { name, at, len, x, ovr, flds }`
+* `!Occ [ String, Int, Int, List ]` &#8594; `!Occ { name, len, x, flds }`
+* `!Occ [ String, Int, Int, Int, List ]` &#8594; `!Occ { name, at, len, x, flds }`
+* `!Occ [ String, Int, Int, Bool, List ]` &#8594; `!Occ { name, len, x, ovr, flds }`
+* `!Occ [ String, Int, Int, Int, Bool, List ]` &#8594; `!Occ { name, at, len, x, ovr, flds }`
 
 ### `GRP`
 
